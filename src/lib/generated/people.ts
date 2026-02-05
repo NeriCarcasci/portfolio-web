@@ -12,7 +12,7 @@ export interface Person {
 export const people: Person[] = [
   {
     "id": "author",
-    "name": "Your Name",
+    "name": "Neri Carcasci",
     "role": "AI/ML Engineer",
     "url": "https://yourdomain.com/about"
   }

@@ -163,8 +163,8 @@ Edit `content/blog/people.json`:
 [
   {
     "id": "author",
-    "name": "Your Name",
-    "role": "Engineer",
+    "name": "Neri Carcasci",
+    "role": "AI/ML Engineer",
     "url": "https://yourdomain.com/about",
     "avatar": null
   }
