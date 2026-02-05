@@ -35,7 +35,7 @@
 <!-- Global decrypting background -->
 <DecryptingGutterBackground />
 
-<div class="relative min-h-screen flex flex-col bg-background z-0">
+<div class="relative min-h-screen flex flex-col z-0">
   {#if !isTerminalPage}
     <header class="sticky top-0 z-50 border-b border-border/50 bg-background/80 backdrop-blur-sm">
       <nav class="container-main py-4 flex flex-wrap items-center gap-4" aria-label="Primary">

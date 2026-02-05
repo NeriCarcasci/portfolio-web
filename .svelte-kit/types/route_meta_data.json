@@ -1,0 +1,26 @@
+{
+	"/": [],
+	"/about": [],
+	"/api/ask": [
+		"src/routes/api/ask/+server.ts"
+	],
+	"/blog": [],
+	"/blog/[slug]": [
+		"src/routes/blog/[slug]/+page.ts"
+	],
+	"/contact": [],
+	"/projects": [],
+	"/projects/[slug]": [
+		"src/routes/projects/[slug]/+page.ts"
+	],
+	"/robots.txt": [
+		"src/routes/robots.txt/+server.ts"
+	],
+	"/rss.xml": [
+		"src/routes/rss.xml/+server.ts"
+	],
+	"/sitemap.xml": [
+		"src/routes/sitemap.xml/+server.ts"
+	],
+	"/terminal": []
+}

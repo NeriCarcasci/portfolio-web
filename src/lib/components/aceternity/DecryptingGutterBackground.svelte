@@ -20,31 +20,34 @@
 	];
 
 	// Random character set
-	const randomChars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789@#$%&*+=<>?/\\|{}[]~';
+	const randomChars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789@#$%&*<>[]{}';
 
 	// Grid configuration
-	const CELL_WIDTH = 12;
-	const CELL_HEIGHT = 20;
-	const REVEAL_RADIUS = 140;
-	const DECAY_TIME = 800; // ms for decrypted text to fade back
-	const THROTTLE_MS = 50;
+	const CELL_WIDTH = 10;
+	const CELL_HEIGHT = 16;
+	const REVEAL_RADIUS = 150;
+	const DECAY_TIME = 800;
+	const SCRAMBLE_RATE = 0.005; // ~0.5% of cells change per frame for subtle cyphertext effect
+	const BASE_OPACITY = 0.12; // Base visibility of background characters
 
-	// State
-	let containerEl: HTMLDivElement;
-	let canvasEl: HTMLCanvasElement;
+	// Element refs
+	let containerEl: HTMLDivElement | undefined;
+	let canvasEl: HTMLCanvasElement | undefined;
+
+	// Internal state
 	let ctx: CanvasRenderingContext2D | null = null;
 	let cols = 0;
 	let rows = 0;
 	let grid: string[][] = [];
 	let groundTruth: (string | null)[][] = [];
 	let cellRevealTime: number[][] = [];
+	let cellScrambleOffset: number[][] = []; // For staggered scrambling
 	let mouseX = -1000;
 	let mouseY = -1000;
-	let lastMouseMove = 0;
 	let animationId: number | null = null;
 	let isReducedMotion = false;
-	let isSmallScreen = false;
 	let isInitialized = false;
+	let frameCount = 0;
 
 	// Seeded random for deterministic phrase placement
 	function seededRandom(seed: number): () => number {
@@ -54,8 +57,8 @@
 		};
 	}
 
-	function getRandomChar(rng: () => number): string {
-		return randomChars[Math.floor(rng() * randomChars.length)];
+	function getRandomChar(): string {
+		return randomChars[Math.floor(Math.random() * randomChars.length)];
 	}
 
 	function initializeGrid() {
@@ -66,8 +69,8 @@
 		rows = Math.floor(rect.height / CELL_HEIGHT);
 
 		// Clamp to reasonable limits
-		cols = Math.min(cols, 200);
-		rows = Math.min(rows, 100);
+		cols = Math.min(cols, 300);
+		rows = Math.min(rows, 150);
 
 		if (cols <= 0 || rows <= 0) return;
 
@@ -75,17 +78,18 @@
 		grid = [];
 		groundTruth = [];
 		cellRevealTime = [];
-
-		const rng = seededRandom(42);
+		cellScrambleOffset = [];
 
 		for (let y = 0; y < rows; y++) {
 			grid[y] = [];
 			groundTruth[y] = [];
 			cellRevealTime[y] = [];
+			cellScrambleOffset[y] = [];
 			for (let x = 0; x < cols; x++) {
-				grid[y][x] = getRandomChar(rng);
+				grid[y][x] = getRandomChar();
 				groundTruth[y][x] = null;
 				cellRevealTime[y][x] = 0;
+				cellScrambleOffset[y][x] = Math.random() * 100; // Random phase offset for staggered animation
 			}
 		}
 
@@ -98,52 +102,45 @@
 		const rng = seededRandom(12345);
 		const placed: { x: number; y: number; width: number }[] = [];
 
-		for (const phrase of phrases) {
-			let attempts = 0;
-			const maxAttempts = 100;
+		// Place each phrase multiple times across the grid
+		for (let repeat = 0; repeat < 4; repeat++) {
+			for (const phrase of phrases) {
+				let attempts = 0;
+				const maxAttempts = 80;
 
-			while (attempts < maxAttempts) {
-				const x = Math.floor(rng() * (cols - phrase.length - 2));
-				const y = Math.floor(rng() * (rows - 2)) + 1;
+				while (attempts < maxAttempts) {
+					const x = Math.floor(rng() * (cols - phrase.length - 2));
+					const y = Math.floor(rng() * (rows - 2)) + 1;
 
-				if (x < 0 || y < 0) {
-					attempts++;
-					continue;
-				}
-
-				// Check for overlap
-				let overlaps = false;
-				for (const p of placed) {
-					if (
-						y === p.y &&
-						x < p.x + p.width + 2 &&
-						x + phrase.length + 2 > p.x
-					) {
-						overlaps = true;
-						break;
+					if (x < 0 || y < 0) {
+						attempts++;
+						continue;
 					}
-					// Also check row above and below
-					if (
-						Math.abs(y - p.y) <= 1 &&
-						x < p.x + p.width + 1 &&
-						x + phrase.length + 1 > p.x
-					) {
-						overlaps = true;
-						break;
-					}
-				}
 
-				if (!overlaps && x >= 0 && x + phrase.length < cols) {
-					// Place the phrase
-					for (let i = 0; i < phrase.length; i++) {
-						if (groundTruth[y] && x + i < cols) {
-							groundTruth[y][x + i] = phrase[i];
+					// Check for overlap
+					let overlaps = false;
+					for (const p of placed) {
+						if (
+							Math.abs(y - p.y) <= 1 &&
+							x < p.x + p.width + 2 &&
+							x + phrase.length + 2 > p.x
+						) {
+							overlaps = true;
+							break;
 						}
 					}
-					placed.push({ x, y, width: phrase.length });
-					break;
+
+					if (!overlaps && x >= 0 && x + phrase.length < cols) {
+						for (let i = 0; i < phrase.length; i++) {
+							if (groundTruth[y] && x + i < cols) {
+								groundTruth[y][x + i] = phrase[i];
+							}
+						}
+						placed.push({ x, y, width: phrase.length });
+						break;
+					}
+					attempts++;
 				}
-				attempts++;
 			}
 		}
 	}
@@ -166,15 +163,15 @@
 	}
 
 	function render() {
-		if (!ctx || !isInitialized || cols === 0 || rows === 0) return;
+		if (!ctx || !isInitialized || cols === 0 || rows === 0 || !containerEl) return;
 
 		const rect = containerEl.getBoundingClientRect();
 		ctx.clearRect(0, 0, rect.width, rect.height);
 
 		const now = Date.now();
-		const rng = seededRandom(now % 10000); // Slow-changing random for ambient animation
+		frameCount++;
 
-		ctx.font = '14px "JetBrains Mono", monospace';
+		ctx.font = '11px "JetBrains Mono", monospace';
 		ctx.textBaseline = 'top';
 
 		for (let y = 0; y < rows; y++) {
@@ -182,58 +179,64 @@
 				const cellX = x * CELL_WIDTH;
 				const cellY = y * CELL_HEIGHT;
 
-				// Distance from cursor
 				const dx = cellX + CELL_WIDTH / 2 - mouseX;
 				const dy = cellY + CELL_HEIGHT / 2 - mouseY;
 				const dist = Math.sqrt(dx * dx + dy * dy);
 
 				const truthChar = groundTruth[y]?.[x];
 				const timeSinceReveal = now - (cellRevealTime[y]?.[x] || 0);
+				const offset = cellScrambleOffset[y]?.[x] || 0;
 
 				let char: string;
-				let alpha: number;
 				let color: string;
 
 				if (dist < REVEAL_RADIUS) {
-					// Within reveal radius
+					// Within hover radius - radial gradient reveal
 					cellRevealTime[y][x] = now;
+					const intensity = 1 - dist / REVEAL_RADIUS;
+					const easedIntensity = intensity * intensity; // Quadratic falloff for smoother gradient
 
 					if (truthChar) {
-						// Reveal the actual character
+						// Reveal the actual character - bright green with radial gradient
 						char = truthChar;
-						const intensity = 1 - dist / REVEAL_RADIUS;
-						alpha = 0.4 + intensity * 0.5;
-						color = `rgba(52, 211, 153, ${alpha})`; // emerald-400
+						const alpha = 0.5 + easedIntensity * 0.5;
+						color = `rgba(52, 211, 153, ${alpha})`;
 					} else {
-						// No phrase here - show subtle dot or space
-						char = rng() > 0.7 ? '·' : ' ';
-						alpha = 0.1;
-						color = `rgba(100, 100, 100, ${alpha})`;
+						// No phrase here - show active scrambling effect near cursor
+						if (Math.random() < 0.15 + easedIntensity * 0.3) {
+							grid[y][x] = getRandomChar();
+						}
+						char = grid[y]?.[x] || ' ';
+						const alpha = BASE_OPACITY + easedIntensity * 0.25;
+						color = `rgba(74, 222, 128, ${alpha})`;
 					}
 				} else if (timeSinceReveal < DECAY_TIME && truthChar) {
 					// Decaying from revealed state
 					const decay = timeSinceReveal / DECAY_TIME;
-					const eased = decay * decay; // ease-in
+					const eased = decay * decay;
 
 					if (eased < 0.5) {
-						// Still showing truth char, fading
 						char = truthChar;
-						alpha = 0.4 * (1 - eased * 2);
+						const alpha = 0.7 * (1 - eased * 2);
 						color = `rgba(52, 211, 153, ${alpha})`;
 					} else {
-						// Transitioning to random
-						char = grid[y]?.[x] || getRandomChar(rng);
-						alpha = 0.08;
-						color = `rgba(74, 222, 128, ${alpha})`; // green-400 very dim
+						// Transition back to scrambled
+						const scrambleProgress = (eased - 0.5) * 2;
+						if (Math.random() < 0.1 + scrambleProgress * 0.4) {
+							grid[y][x] = getRandomChar();
+						}
+						char = grid[y]?.[x] || getRandomChar();
+						const alpha = BASE_OPACITY * (1 - scrambleProgress * 0.5);
+						color = `rgba(74, 222, 128, ${Math.max(BASE_OPACITY * 0.5, alpha)})`;
 					}
 				} else {
-					// Default random state
-					// Occasionally shuffle random chars for ambient effect
-					if (!isReducedMotion && rng() > 0.995) {
-						grid[y][x] = getRandomChar(rng);
+					// Default state - cyphertext effect with random changes
+					if (!isReducedMotion && Math.random() < SCRAMBLE_RATE) {
+						grid[y][x] = getRandomChar();
 					}
 					char = grid[y]?.[x] || ' ';
-					alpha = 0.06 + rng() * 0.04;
+					// Subtle variation in brightness
+					const alpha = BASE_OPACITY + (Math.random() * 0.03);
 					color = `rgba(74, 222, 128, ${alpha})`;
 				}
 
@@ -244,48 +247,35 @@
 	}
 
 	function handleMouseMove(e: MouseEvent) {
-		if (isReducedMotion || isSmallScreen) return;
+		if (isReducedMotion || !containerEl) return;
 
-		const now = Date.now();
-		if (now - lastMouseMove < THROTTLE_MS) return;
-		lastMouseMove = now;
-
-		if (containerEl) {
-			const rect = containerEl.getBoundingClientRect();
-			mouseX = e.clientX - rect.left;
-			mouseY = e.clientY - rect.top;
-			render();
-		}
+		const rect = containerEl.getBoundingClientRect();
+		mouseX = e.clientX - rect.left;
+		mouseY = e.clientY - rect.top;
 	}
 
 	function handleMouseLeave() {
 		mouseX = -1000;
 		mouseY = -1000;
-		render();
 	}
 
 	function handleResize() {
 		if (!browser) return;
-
-		isSmallScreen = window.innerWidth < 1024;
-
-		if (!isSmallScreen) {
-			initializeGrid();
-			setupCanvas();
-			render();
-		}
+		initializeGrid();
+		setupCanvas();
+		render();
 	}
 
-	function startAmbientAnimation() {
-		if (isReducedMotion || isSmallScreen) return;
+	function startAnimation() {
+		if (animationId !== null) return;
 
-		let lastFrame = 0;
-		const interval = 200; // Update ambient every 200ms
-
-		function animate(timestamp: number) {
-			if (timestamp - lastFrame > interval) {
-				lastFrame = timestamp;
-				render();
+		let lastLog = 0;
+		function animate() {
+			render();
+			// Log every 5 seconds to confirm animation is running
+			if (Date.now() - lastLog > 5000) {
+				console.log('DecryptingGutter: animation running, frame', frameCount);
+				lastLog = Date.now();
 			}
 			animationId = requestAnimationFrame(animate);
 		}
@@ -293,7 +283,7 @@
 		animationId = requestAnimationFrame(animate);
 	}
 
-	function stopAmbientAnimation() {
+	function stopAnimation() {
 		if (animationId !== null) {
 			cancelAnimationFrame(animationId);
 			animationId = null;
@@ -304,63 +294,63 @@
 		if (!browser) return;
 
 		// Check for reduced motion preference
+		// Note: Set to false to force animation even with reduced motion preference
 		const mediaQuery = window.matchMedia('(prefers-reduced-motion: reduce)');
-		isReducedMotion = mediaQuery.matches;
+		isReducedMotion = false; // mediaQuery.matches;
 
 		mediaQuery.addEventListener('change', (e) => {
 			isReducedMotion = e.matches;
 			if (isReducedMotion) {
-				stopAmbientAnimation();
+				stopAnimation();
+				render();
 			} else {
-				startAmbientAnimation();
+				startAnimation();
 			}
 		});
 
-		// Check screen size
-		isSmallScreen = window.innerWidth < 1024;
-
-		if (!isSmallScreen) {
-			// Small delay to ensure container is rendered
-			setTimeout(() => {
+		// Initialize after a brief delay to ensure DOM is ready
+		const initTimeout = setTimeout(() => {
+			if (containerEl && canvasEl) {
 				initializeGrid();
 				setupCanvas();
 				render();
 
+				console.log('DecryptingGutter: initialized', { isReducedMotion, cols, rows });
+
 				if (!isReducedMotion) {
-					startAmbientAnimation();
+					startAnimation();
+					console.log('DecryptingGutter: animation started');
 				}
-			}, 100);
-		}
+			}
+		}, 50);
 
 		window.addEventListener('resize', handleResize);
 		window.addEventListener('mousemove', handleMouseMove);
+		document.addEventListener('mouseleave', handleMouseLeave);
+
+		return () => {
+			clearTimeout(initTimeout);
+		};
 	});
 
 	onDestroy(() => {
 		if (browser) {
 			window.removeEventListener('resize', handleResize);
 			window.removeEventListener('mousemove', handleMouseMove);
-			stopAmbientAnimation();
+			document.removeEventListener('mouseleave', handleMouseLeave);
+			stopAnimation();
 		}
 	});
 </script>
 
 <div
 	bind:this={containerEl}
-	class="fixed inset-0 -z-10 overflow-hidden pointer-events-none"
-	on:mouseleave={handleMouseLeave}
+	class="fixed inset-0 z-0 overflow-hidden pointer-events-none"
 	role="presentation"
 	aria-hidden="true"
 >
-	{#if !isSmallScreen}
-		<canvas
-			bind:this={canvasEl}
-			class="absolute inset-0 w-full h-full"
-		></canvas>
-		<!-- Center vignette to keep content readable -->
-		<div
-			class="absolute inset-0"
-			style="background: radial-gradient(ellipse 50% 50% at 50% 50%, transparent 0%, rgba(0,0,0,0.95) 100%);"
-		></div>
-	{/if}
+	<canvas
+		bind:this={canvasEl}
+		class="absolute inset-0 w-full h-full"
+	></canvas>
 </div>
