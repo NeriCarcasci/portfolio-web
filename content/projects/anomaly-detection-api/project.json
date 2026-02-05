@@ -1,4 +1,4 @@
-﻿{
+{
   "title": "Anomaly Detection Service",
   "summary": "Designed and built a real-time anomaly detection API for time-series data with configurable sensitivity.",
   "tags": ["Python", "ML", "API", "Real-time"],

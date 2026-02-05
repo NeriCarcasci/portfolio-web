@@ -1,4 +1,4 @@
-﻿## Overview
+## Overview
 Rebuilt the model monitoring metrics layer to support drift detection and reliable API exposure in production.
 
 ## Problem

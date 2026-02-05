@@ -1,4 +1,4 @@
-﻿## Overview
+## Overview
 Built a stateless API for real-time anomaly detection on time-series windows with configurable sensitivity.
 
 ## Problem

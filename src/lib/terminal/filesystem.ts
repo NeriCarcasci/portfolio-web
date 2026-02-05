@@ -49,15 +49,11 @@ function buildProjectFile(project: Project): string {
   return [
     `Title: ${project.title}`,
     `Summary: ${project.summary}`,
+    project.tags.length ? `Tags: ${project.tags.join(', ')}` : '',
+    project.tech.length ? `Tech: ${project.tech.join(', ')}` : '',
+    linkLine ? `\n${linkLine}` : '',
     '',
-    `Problem: ${project.problem}`,
-    '',
-    `Approach: ${project.approach}`,
-    '',
-    `Impact: ${project.impact}`,
-    '',
-    `Tech: ${project.tech.join(', ')}`,
-    linkLine ? `\n${linkLine}` : ''
+    `Open: /projects/${project.slug}`
   ]
     .filter(Boolean)
     .join('\n');

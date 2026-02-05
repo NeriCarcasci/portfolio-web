@@ -1,4 +1,4 @@
-﻿## Overview
+## Overview
 Led architecture and development from MVP through pilot customers and seed funding.
 
 ## Problem

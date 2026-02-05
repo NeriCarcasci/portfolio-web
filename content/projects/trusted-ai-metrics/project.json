@@ -1,4 +1,4 @@
-﻿{
+{
   "title": "Trusted AI Metrics Platform",
   "summary": "Rebuilt ML model monitoring metrics from scratch, enabling drift detection and API exposure for production systems.",
   "tags": ["Python", "ML Ops", "API", "Testing"],
