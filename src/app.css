@@ -1,0 +1,61 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  :root {
+    --background: 0 0% 7%;
+    --foreground: 0 0% 95%;
+    --muted: 0 0% 15%;
+    --muted-foreground: 0 0% 65%;
+    --card: 0 0% 10%;
+    --card-foreground: 0 0% 95%;
+    --border: 0 0% 20%;
+    --input: 0 0% 15%;
+    --primary: 152 72% 45%;
+    --primary-foreground: 0 0% 7%;
+    --secondary: 0 0% 15%;
+    --secondary-foreground: 0 0% 98%;
+    --accent: 152 28% 18%;
+    --accent-foreground: 0 0% 98%;
+    --radius: 0.5rem;
+  }
+
+  * {
+    @apply border-border;
+  }
+
+  html {
+    @apply bg-background text-foreground;
+    color-scheme: dark;
+  }
+
+  body {
+    @apply antialiased;
+  }
+}
+
+@layer components {
+  .container-main {
+    @apply mx-auto max-w-4xl px-6 py-8;
+  }
+
+  .link {
+    @apply text-primary underline decoration-primary/60 underline-offset-4 transition-colors hover:decoration-primary hover:text-primary;
+  }
+
+  .link-subtle {
+    @apply text-muted-foreground transition-colors hover:text-foreground;
+  }
+}
+
+/* Respect reduced motion */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+}

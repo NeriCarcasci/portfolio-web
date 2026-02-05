@@ -1,0 +1,11 @@
+{
+  "title": "Building Production ML Pipelines",
+  "description": "Practical lessons from building ML pipelines that actually work in production, including monitoring, testing, and deployment strategies.",
+  "date": "2024-11-15",
+  "modified": "2024-12-01",
+  "tags": ["machine-learning", "mlops", "python", "production"],
+  "cover": "<local:cover.webp>",
+  "people": ["author"],
+  "type": "article",
+  "draft": false
+}
