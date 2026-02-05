@@ -54,6 +54,9 @@
 	const HERO_EDGE_NOISE = 25; // Pixels of ragged edge variation
 	const SCROLL_FADE_START = 300; // Start fading after 300px scroll (delayed until content is closer)
 	const SCROLL_FADE_END = 800; // Fully covered by 800px scroll (slower, more control)
+	const TARGET_FPS_IDLE = 30;
+	const TARGET_FPS_ACTIVE = 60;
+	const POINTER_ACTIVE_WINDOW = 200;
 
 	// Element refs
 	let containerEl: HTMLDivElement | undefined;
@@ -77,6 +80,9 @@
 	let isInitialized = false;
 	let frameCount = 0;
 	let animationStartTime = 0;
+	let lastFrameTime = 0;
+	let isPageVisible = true;
+	let lastPointerTime = 0;
 	let heroEdgeNoise: Map<string, number> = new Map(); // Stores noise values for ragged edges
 	let scrollY = 0; // Track scroll position for fade effect
 	let smoothScrollY = 0; // Interpolated scroll for smooth animations
@@ -603,6 +609,7 @@
 		const rect = containerEl.getBoundingClientRect();
 		mouseX = e.clientX - rect.left;
 		mouseY = e.clientY - rect.top;
+		lastPointerTime = performance.now();
 
 		// Check if hovering over hero interactive elements
 		hoveredHeroElement = null;
@@ -631,6 +638,15 @@
 
 	function handleScroll() {
 		scrollY = window.scrollY;
+	}
+
+	function handleVisibilityChange() {
+		isPageVisible = !document.hidden;
+		if (!isPageVisible || isReducedMotion) {
+			stopAnimation();
+			return;
+		}
+		startAnimation();
 	}
 
 	function handleClick(e: MouseEvent) {
@@ -665,8 +681,21 @@
 
 	function startAnimation() {
 		if (animationId !== null) return;
+		lastFrameTime = 0;
 
-		function animate() {
+		function getFrameInterval(time: number) {
+			const active = time - lastPointerTime < POINTER_ACTIVE_WINDOW;
+			const fps = active ? TARGET_FPS_ACTIVE : TARGET_FPS_IDLE;
+			return 1000 / fps;
+		}
+
+		function animate(time: number) {
+			if (time - lastFrameTime < getFrameInterval(time)) {
+				animationId = requestAnimationFrame(animate);
+				return;
+			}
+
+			lastFrameTime = time;
 			render();
 			animationId = requestAnimationFrame(animate);
 		}
@@ -685,7 +714,7 @@
 		if (!browser) return;
 
 		const mediaQuery = window.matchMedia('(prefers-reduced-motion: reduce)');
-		isReducedMotion = false;
+		isReducedMotion = mediaQuery.matches;
 
 		mediaQuery.addEventListener('change', (e) => {
 			isReducedMotion = e.matches;
@@ -703,19 +732,21 @@
 				initializeGrid();
 				render();
 
-				if (!isReducedMotion) {
+				if (!isReducedMotion && isPageVisible) {
 					startAnimation();
 				}
 			}
 		}, 50);
 
 		window.addEventListener('resize', handleResize);
-		window.addEventListener('mousemove', handleMouseMove);
+		window.addEventListener('mousemove', handleMouseMove, { passive: true });
 		window.addEventListener('scroll', handleScroll, { passive: true });
 		document.addEventListener('mouseleave', handleMouseLeave);
+		document.addEventListener('visibilitychange', handleVisibilityChange);
 
 		// Initialize scroll position
 		scrollY = window.scrollY;
+		handleVisibilityChange();
 
 		return () => {
 			clearTimeout(initTimeout);
@@ -728,6 +759,7 @@
 			window.removeEventListener('mousemove', handleMouseMove);
 			window.removeEventListener('scroll', handleScroll);
 			document.removeEventListener('mouseleave', handleMouseLeave);
+			document.removeEventListener('visibilitychange', handleVisibilityChange);
 			stopAnimation();
 		}
 	});

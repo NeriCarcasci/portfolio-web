@@ -11,10 +11,10 @@ export function createHistory() {
     get index() {
       return index;
     },
-    add(command: string, output: string) {
+    add(command: string, output: string, cwd: string) {
       entries = [
         ...entries,
-        { command, output, timestamp: Date.now() }
+        { command, output, timestamp: Date.now(), cwd }
       ];
       index = entries.length;
     },

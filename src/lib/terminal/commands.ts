@@ -1,7 +1,15 @@
-import { getAllProjects, getProject } from '$content/projects';
-import { about } from '$content/about';
-import { getAllPosts, getPostBySlug } from '$lib/blog';
 import type { CommandHandler, CommandResult } from './types';
+import {
+  HOME_PATH,
+  TERMINAL_USER,
+  getCwd,
+  isDir,
+  isFile,
+  listDir,
+  readFile,
+  resolvePath,
+  setCwd
+} from './filesystem';
 
 function escapeHtml(text: string): string {
   return text
@@ -11,12 +19,21 @@ function escapeHtml(text: string): string {
     .replace(/"/g, '&quot;');
 }
 
-function formatDate(dateStr: string): string {
-  return new Date(dateStr).toLocaleDateString('en-US', {
-    year: 'numeric',
-    month: 'short',
-    day: 'numeric'
-  });
+function formatLs(entries: { name: string; type: 'dir' | 'file' }[]): string {
+  if (entries.length === 0) return '';
+  return entries
+    .map((entry) => (entry.type === 'dir' ? `${entry.name}/` : entry.name))
+    .join('\n');
+}
+
+function renderPre(text: string): string {
+  return `<pre class="whitespace-pre-wrap">${escapeHtml(text)}</pre>`;
+}
+
+function basename(path: string): string {
+  const normalized = path.replace(/\/+$/, '');
+  const parts = normalized.split('/').filter(Boolean);
+  return parts[parts.length - 1] ?? '/';
 }
 
 export const commands = new Map<string, CommandHandler>();
@@ -29,16 +46,11 @@ commands.set('help', {
   <p class="text-muted-foreground">Available commands:</p>
   <ul class="space-y-1 ml-4">
     <li><code class="text-foreground">help</code> <span class="text-muted-foreground">- Show this help</span></li>
-    <li><code class="text-foreground">home</code> <span class="text-muted-foreground">- Go to home page</span></li>
-    <li><code class="text-foreground">projects</code> <span class="text-muted-foreground">- List all projects</span></li>
-    <li><code class="text-foreground">project &lt;slug&gt;</code> <span class="text-muted-foreground">- Show project details</span></li>
-    <li><code class="text-foreground">blog</code> <span class="text-muted-foreground">- List blog posts</span></li>
-    <li><code class="text-foreground">post &lt;slug&gt;</code> <span class="text-muted-foreground">- Show blog post</span></li>
-    <li><code class="text-foreground">open &lt;slug&gt;</code> <span class="text-muted-foreground">- Navigate to page</span></li>
-    <li><code class="text-foreground">about</code> <span class="text-muted-foreground">- About me</span></li>
-    <li><code class="text-foreground">contact</code> <span class="text-muted-foreground">- Contact information</span></li>
-    <li><code class="text-foreground">cv</code> <span class="text-muted-foreground">- Open CV/resume</span></li>
-    <li><code class="text-foreground">ask &lt;question&gt;</code> <span class="text-muted-foreground">- Ask about my work</span></li>
+    <li><code class="text-foreground">ls</code> <span class="text-muted-foreground">- List files</span></li>
+    <li><code class="text-foreground">cd &lt;path&gt;</code> <span class="text-muted-foreground">- Change directory</span></li>
+    <li><code class="text-foreground">cat &lt;file&gt;</code> <span class="text-muted-foreground">- Print a file</span></li>
+    <li><code class="text-foreground">pwd</code> <span class="text-muted-foreground">- Show current directory</span></li>
+    <li><code class="text-foreground">whoami</code> <span class="text-muted-foreground">- Show current user</span></li>
     <li><code class="text-foreground">clear</code> <span class="text-muted-foreground">- Clear terminal</span></li>
     <li><code class="text-foreground">exit</code> <span class="text-muted-foreground">- Exit terminal mode</span></li>
   </ul>
@@ -46,221 +58,77 @@ commands.set('help', {
   })
 });
 
-commands.set('home', {
-  name: 'home',
-  description: 'Go to home page',
-  execute: () => ({
-    html: '<p>Navigating to home...</p>',
-    navigate: '/'
-  })
-});
-
-commands.set('projects', {
-  name: 'projects',
-  description: 'List all projects',
-  execute: () => {
-    const projects = getAllProjects();
-    const items = projects
-      .map(
-        (p) =>
-          `<li class="py-2 border-b border-border last:border-0">
-  <a href="/projects/${p.slug}" class="text-foreground hover:underline font-medium">${escapeHtml(p.title)}</a>
-  <p class="text-muted-foreground text-sm mt-1">${escapeHtml(p.summary)}</p>
-  <div class="flex gap-2 mt-1">${p.tags.map((t) => `<span class="text-xs text-muted-foreground">${escapeHtml(t)}</span>`).join('')}</div>
-</li>`
-      )
-      .join('');
-    return {
-      html: `<div><p class="text-muted-foreground mb-3">${projects.length} projects:</p><ul class="space-y-1">${items}</ul></div>`
-    };
-  }
-});
-
-commands.set('project', {
-  name: 'project',
-  description: 'Show project details',
-  usage: 'project <slug>',
+commands.set('ls', {
+  name: 'ls',
+  description: 'List files',
   execute: (args: string[]) => {
-    const slug = args[0];
-    if (!slug) {
+    const target = args[0] ?? '.';
+    const path = resolvePath(target);
+    const entries = listDir(path);
+    if (!entries) {
+      if (isFile(path)) {
+        return { html: renderPre(basename(path)) };
+      }
       return {
-        html: '<p class="text-red-400">Usage: project &lt;slug&gt;</p><p class="text-muted-foreground mt-1">Run <code>projects</code> to see available slugs.</p>'
+        html: `<p class="text-red-400">ls: cannot access '${escapeHtml(target)}': No such file or directory</p>`
       };
     }
-    const project = getProject(slug);
-    if (!project) {
-      return {
-        html: `<p class="text-red-400">Project "${escapeHtml(slug)}" not found.</p><p class="text-muted-foreground mt-1">Run <code>projects</code> to see available slugs.</p>`
-      };
-    }
-    return {
-      html: `<article class="space-y-4">
-  <header>
-    <h2 class="text-lg font-semibold">${escapeHtml(project.title)}</h2>
-    <p class="text-muted-foreground">${escapeHtml(project.summary)}</p>
-  </header>
-  <section>
-    <h3 class="font-medium text-muted-foreground">Problem</h3>
-    <p>${escapeHtml(project.problem)}</p>
-  </section>
-  <section>
-    <h3 class="font-medium text-muted-foreground">Approach</h3>
-    <p>${escapeHtml(project.approach)}</p>
-  </section>
-  <section>
-    <h3 class="font-medium text-muted-foreground">Impact</h3>
-    <p>${escapeHtml(project.impact)}</p>
-  </section>
-  <section>
-    <h3 class="font-medium text-muted-foreground">Tech</h3>
-    <p>${project.tech.map((t) => escapeHtml(t)).join(', ')}</p>
-  </section>
-  <p class="pt-2"><a href="/projects/${project.slug}" class="text-foreground underline">View full page →</a></p>
-</article>`
-    };
+    const output = formatLs(entries);
+    return { html: output ? renderPre(output) : '' };
   }
 });
 
-commands.set('blog', {
-  name: 'blog',
-  description: 'List blog posts',
-  execute: () => {
-    const posts = getAllPosts();
-    if (posts.length === 0) {
-      return {
-        html: '<p class="text-muted-foreground">No blog posts yet. Check back soon!</p>'
-      };
-    }
-    const items = posts
-      .map(
-        (p) =>
-          `<li class="py-2 border-b border-border last:border-0">
-  <a href="/blog/${p.slug}" class="text-foreground hover:underline font-medium">${escapeHtml(p.title)}</a>
-  <p class="text-muted-foreground text-xs mt-1">${formatDate(p.date)}</p>
-  <p class="text-muted-foreground text-sm mt-1">${escapeHtml(p.description)}</p>
-  <div class="flex gap-2 mt-1">${p.tags.map((t) => `<span class="text-xs text-muted-foreground">#${escapeHtml(t)}</span>`).join(' ')}</div>
-</li>`
-      )
-      .join('');
-    return {
-      html: `<div><p class="text-muted-foreground mb-3">${posts.length} posts:</p><ul class="space-y-1">${items}</ul></div>`
-    };
-  }
-});
-
-commands.set('post', {
-  name: 'post',
-  description: 'Show blog post',
-  usage: 'post <slug>',
+commands.set('cd', {
+  name: 'cd',
+  description: 'Change directory',
+  usage: 'cd <path>',
   execute: (args: string[]) => {
-    const slug = args[0];
-    if (!slug) {
+    const target = args[0] ?? HOME_PATH;
+    const path = resolvePath(target);
+    if (!isDir(path)) {
+      const reason = isFile(path) ? 'Not a directory' : 'No such file or directory';
       return {
-        html: '<p class="text-red-400">Usage: post &lt;slug&gt;</p><p class="text-muted-foreground mt-1">Run <code>blog</code> to see available posts.</p>'
+        html: `<p class="text-red-400">cd: ${escapeHtml(target)}: ${reason}</p>`
       };
     }
-    const post = getPostBySlug(slug);
-    if (!post) {
-      return {
-        html: `<p class="text-red-400">Post "${escapeHtml(slug)}" not found.</p><p class="text-muted-foreground mt-1">Run <code>blog</code> to see available posts.</p>`
-      };
-    }
-    return {
-      html: `<article class="space-y-4">
-  <header>
-    <h2 class="text-lg font-semibold">${escapeHtml(post.title)}</h2>
-    <p class="text-muted-foreground text-sm">${formatDate(post.date)}</p>
-  </header>
-  <p>${escapeHtml(post.description)}</p>
-  <div class="flex gap-2">${post.tags.map((t) => `<span class="text-xs text-muted-foreground">#${escapeHtml(t)}</span>`).join(' ')}</div>
-  <p class="pt-2"><a href="/blog/${post.slug}" class="text-foreground underline">Read full post →</a></p>
-</article>`
-    };
+    setCwd(path);
+    return { html: '' };
   }
 });
 
-commands.set('open', {
-  name: 'open',
-  description: 'Navigate to page',
-  usage: 'open <slug>',
+commands.set('cat', {
+  name: 'cat',
+  description: 'Print a file',
+  usage: 'cat <file>',
   execute: (args: string[]) => {
-    const slug = args[0];
-    if (!slug) {
+    const target = args[0];
+    if (!target) {
       return {
-        html: '<p class="text-red-400">Usage: open &lt;slug&gt;</p>'
+        html: '<p class="text-red-400">Usage: cat &lt;file&gt;</p>'
       };
     }
-    // Try project first
-    const project = getProject(slug);
-    if (project) {
+    const path = resolvePath(target);
+    const contents = readFile(path);
+    if (contents === null) {
+      const reason = isDir(path) ? 'Is a directory' : 'No such file or directory';
       return {
-        html: `<p>Opening ${escapeHtml(project.title)}...</p>`,
-        navigate: `/projects/${project.slug}`
+        html: `<p class="text-red-400">cat: ${escapeHtml(target)}: ${reason}</p>`
       };
     }
-    // Try blog post
-    const post = getPostBySlug(slug);
-    if (post) {
-      return {
-        html: `<p>Opening ${escapeHtml(post.title)}...</p>`,
-        navigate: `/blog/${post.slug}`
-      };
-    }
-    return {
-      html: `<p class="text-red-400">"${escapeHtml(slug)}" not found.</p><p class="text-muted-foreground mt-1">Run <code>projects</code> or <code>blog</code> to see available items.</p>`
-    };
+    return { html: renderPre(contents) };
   }
 });
 
-commands.set('about', {
-  name: 'about',
-  description: 'About me',
-  execute: () => {
-    const timeline = about.timeline
-      .map(
-        (t) =>
-          `<li class="flex gap-4"><span class="text-muted-foreground w-12">${escapeHtml(t.year)}</span><div><span class="font-medium">${escapeHtml(t.title)}</span><p class="text-muted-foreground text-sm">${escapeHtml(t.description)}</p></div></li>`
-      )
-      .join('');
-    return {
-      html: `<article class="space-y-4">
-  <header>
-    <h2 class="text-lg font-semibold">${escapeHtml(about.name)}</h2>
-    <p class="text-muted-foreground">${escapeHtml(about.role)}</p>
-  </header>
-  <p>${escapeHtml(about.bio)}</p>
-  <section>
-    <h3 class="font-medium text-muted-foreground mb-2">Timeline</h3>
-    <ul class="space-y-2">${timeline}</ul>
-  </section>
-  <p class="pt-2"><a href="/about" class="text-foreground underline">View full page →</a></p>
-</article>`
-    };
-  }
+commands.set('pwd', {
+  name: 'pwd',
+  description: 'Show current directory',
+  execute: () => ({ html: renderPre(getCwd()) })
 });
 
-commands.set('contact', {
-  name: 'contact',
-  description: 'Contact information',
-  execute: () => ({
-    html: `<section class="space-y-2">
-  <h3 class="text-sm uppercase tracking-wide text-muted-foreground">Contact</h3>
-  <ul class="space-y-1">
-    <li><span class="text-muted-foreground">Email:</span> <a href="mailto:${about.email}" class="underline">${escapeHtml(about.email)}</a></li>
-    <li><span class="text-muted-foreground">GitHub:</span> <a href="${about.github}" target="_blank" rel="noopener" class="underline">${escapeHtml(about.github)}</a></li>
-    <li><span class="text-muted-foreground">LinkedIn:</span> <a href="${about.linkedin}" target="_blank" rel="noopener" class="underline">${escapeHtml(about.linkedin)}</a></li>
-  </ul>
-</section>`
-  })
-});
-
-commands.set('cv', {
-  name: 'cv',
-  description: 'Open CV/resume',
-  execute: () => ({
-    html: `<p>Opening CV... <a href="${about.cvUrl}" target="_blank" rel="noopener" class="underline">Click here if not redirected</a></p>`,
-    navigate: about.cvUrl
-  })
+commands.set('whoami', {
+  name: 'whoami',
+  description: 'Show current user',
+  execute: () => ({ html: renderPre(TERMINAL_USER) })
 });
 
 commands.set('clear', {
@@ -280,42 +148,6 @@ commands.set('exit', {
   })
 });
 
-commands.set('ask', {
-  name: 'ask',
-  description: 'Ask about my work',
-  usage: 'ask <question>',
-  execute: async (args: string[]) => {
-    const question = args.join(' ');
-    if (!question) {
-      return {
-        html: '<p class="text-red-400">Usage: ask &lt;question&gt;</p><p class="text-muted-foreground mt-1">Example: ask what technologies do you use?</p>'
-      };
-    }
-
-    try {
-      const response = await fetch('/api/ask', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ question })
-      });
-      const data = await response.json();
-
-      const sources =
-        data.sources?.length > 0
-          ? `<div class="mt-3 pt-3 border-t border-border"><p class="text-muted-foreground text-sm">Sources:</p><ul class="mt-1">${data.sources.map((s: { title: string; url: string }) => `<li><a href="${s.url}" class="text-sm underline">${escapeHtml(s.title)}</a></li>`).join('')}</ul></div>`
-          : '';
-
-      return {
-        html: `<div><p>${escapeHtml(data.answer)}</p>${sources}</div>`
-      };
-    } catch {
-      return {
-        html: '<p class="text-red-400">Failed to process question. Try again.</p>'
-      };
-    }
-  }
-});
-
 export function getCommand(name: string): CommandHandler | undefined {
   return commands.get(name.toLowerCase());
 }
@@ -332,7 +164,7 @@ export async function executeCommand(input: string): Promise<CommandResult> {
   const handler = getCommand(cmdName);
   if (!handler) {
     return {
-      html: `<p class="text-red-400">Command not found: ${escapeHtml(cmdName)}</p><p class="text-muted-foreground mt-1">Type <code>help</code> for available commands.</p>`
+      html: `<p class="text-red-400">command not found: ${escapeHtml(cmdName)}</p><p class="text-muted-foreground mt-1">Type <code>help</code> for available commands.</p>`
     };
   }
 

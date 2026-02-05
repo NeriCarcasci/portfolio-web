@@ -7,6 +7,7 @@ export interface HistoryEntry {
   command: string;
   output: string;
   timestamp: number;
+  cwd: string;
 }
 
 export interface CommandHandler {

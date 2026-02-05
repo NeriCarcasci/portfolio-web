@@ -1,7 +1,9 @@
 <script lang="ts">
+  import type { PromptParts } from '$terminal/filesystem';
   import { cn } from '$lib/utils';
 
   interface Props {
+    prompt: PromptParts;
     value: string;
     onsubmit: (value: string) => void;
     onkeydown: (e: KeyboardEvent) => void;
@@ -9,11 +11,27 @@
     disabled?: boolean;
   }
 
-  let { value = $bindable(), onsubmit, onkeydown, oninput, disabled = false }: Props = $props();
+  let {
+    prompt,
+    value = $bindable(),
+    onsubmit,
+    onkeydown,
+    oninput,
+    disabled = false
+  }: Props = $props();
   let inputEl: HTMLInputElement | undefined = $state();
 
   export function focus() {
-    inputEl?.focus();
+    if (!inputEl) return;
+    inputEl.focus();
+    const length = inputEl.value.length;
+    requestAnimationFrame(() => {
+      try {
+        inputEl?.setSelectionRange(length, length);
+      } catch {
+        // Ignore selection errors for unsupported input types
+      }
+    });
   }
 
   function handleSubmit(e: Event) {
@@ -34,8 +52,11 @@
   }
 </script>
 
-<form onsubmit={handleSubmit} class="flex items-center gap-2">
-  <span class="text-muted-foreground select-none" aria-hidden="true">&gt;</span>
+<form onsubmit={handleSubmit} class="flex items-center">
+  <span class="text-emerald-400" aria-hidden="true">{prompt.user}@{prompt.host}</span>
+  <span class="text-muted-foreground" aria-hidden="true">:</span>
+  <span class="text-sky-400" aria-hidden="true">{prompt.path}</span>
+  <span class="text-muted-foreground" aria-hidden="true">{prompt.symbol}</span>
   <input
     bind:this={inputEl}
     type="text"
@@ -47,11 +68,10 @@
     autocapitalize="off"
     spellcheck="false"
     class={cn(
-      'flex-1 bg-transparent outline-none text-foreground',
+      'ml-2 flex-1 bg-transparent outline-none text-foreground',
       'placeholder:text-muted-foreground/50',
       'disabled:opacity-50'
     )}
-    placeholder="Type a command..."
     aria-label="Terminal input"
   />
 </form>

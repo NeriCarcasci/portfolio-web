@@ -27,7 +27,7 @@ export {};
 
 declare module "$app/types" {
 	export interface AppTypes {
-		RouteId(): "/" | "/about" | "/api" | "/api/ask" | "/blog" | "/blog/[slug]" | "/contact" | "/projects" | "/projects/[slug]" | "/robots.txt" | "/rss.xml" | "/sitemap.xml" | "/terminal";
+		RouteId(): "/" | "/about" | "/api" | "/api/ask" | "/blog" | "/blog/[slug]" | "/projects" | "/projects/[slug]" | "/robots.txt" | "/rss.xml" | "/sitemap.xml" | "/terminal";
 		RouteParams(): {
 			"/blog/[slug]": { slug: string };
 			"/projects/[slug]": { slug: string }
@@ -39,7 +39,6 @@ declare module "$app/types" {
 			"/api/ask": Record<string, never>;
 			"/blog": { slug?: string };
 			"/blog/[slug]": { slug: string };
-			"/contact": Record<string, never>;
 			"/projects": { slug?: string };
 			"/projects/[slug]": { slug: string };
 			"/robots.txt": Record<string, never>;
@@ -47,7 +46,7 @@ declare module "$app/types" {
 			"/sitemap.xml": Record<string, never>;
 			"/terminal": Record<string, never>
 		};
-		Pathname(): "/" | "/about" | "/about/" | "/api" | "/api/" | "/api/ask" | "/api/ask/" | "/blog" | "/blog/" | `/blog/${string}` & {} | `/blog/${string}/` & {} | "/contact" | "/contact/" | "/projects" | "/projects/" | `/projects/${string}` & {} | `/projects/${string}/` & {} | "/robots.txt" | "/robots.txt/" | "/rss.xml" | "/rss.xml/" | "/sitemap.xml" | "/sitemap.xml/" | "/terminal" | "/terminal/";
+		Pathname(): "/" | "/about" | "/about/" | "/api" | "/api/" | "/api/ask" | "/api/ask/" | "/blog" | "/blog/" | `/blog/${string}` & {} | `/blog/${string}/` & {} | "/projects" | "/projects/" | `/projects/${string}` & {} | `/projects/${string}/` & {} | "/robots.txt" | "/robots.txt/" | "/rss.xml" | "/rss.xml/" | "/sitemap.xml" | "/sitemap.xml/" | "/terminal" | "/terminal/";
 		ResolvedPathname(): `${"" | `/${string}`}${ReturnType<AppTypes['Pathname']>}`;
 		Asset(): "/cv.pdf" | "/favicon.svg" | string & {};
 	}

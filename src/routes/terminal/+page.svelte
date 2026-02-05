@@ -11,6 +11,7 @@
   import type { HistoryEntry } from '$terminal/types';
   import { getSuggestions, getTabCompletion, type Suggestion } from '$terminal/suggest';
   import { commands, executeCommand } from '$terminal/commands';
+  import { getCwd, getPromptParts } from '$terminal/filesystem';
   import { onMount } from 'svelte';
 
   let historyEntries = $state<HistoryEntry[]>([]);
@@ -23,8 +24,10 @@
   let inputComponent: ReturnType<typeof TerminalInput> | undefined = $state();
   let isHydrated = $state(false);
   let terminalError = $state<string | null>(null);
+  let currentCwd = $state(getCwd());
 
-  const suggestedCommands = ['help', 'projects', 'about', 'ask what do you do?'];
+  const promptParts = $derived(getPromptParts(currentCwd));
+  const suggestedCommands = ['ls', 'cd /projects', 'cat readme.md', 'help'];
   const skeletonLines = [0, 1, 2, 3, 4];
 
   function setTerminalError(err: unknown) {
@@ -32,10 +35,10 @@
     terminalError = 'Terminal failed to initialize. Please try again or return home.';
   }
 
-  function historyAdd(command: string, output: string) {
+  function historyAdd(command: string, output: string, cwd: string) {
     historyEntries = [
       ...historyEntries,
-      { command, output, timestamp: Date.now() }
+      { command, output, timestamp: Date.now(), cwd }
     ];
     historyIndex = historyEntries.length;
   }
@@ -95,26 +98,26 @@
     selectedSuggestion = -1;
 
     try {
+      const promptCwd = getCwd();
       const result = await executeCommand(value);
 
       if (result.html === '__CLEAR__') {
         historyClear();
       } else {
-        historyAdd(value, result.html);
+        historyAdd(value, result.html, promptCwd);
       }
 
+      currentCwd = getCwd();
       inputValue = '';
       historyReset();
       isProcessing = false;
 
-      // Scroll to bottom
       setTimeout(() => {
         if (terminalEl) {
           terminalEl.scrollTop = terminalEl.scrollHeight;
         }
       }, 10);
 
-      // Handle navigation
       if (result.navigate) {
         setTimeout(() => {
           goto(result.navigate!);
@@ -183,6 +186,15 @@
   function handleChipSelect(command: string) {
     handleSubmit(command);
   }
+
+  function handleTerminalClick(event: MouseEvent) {
+    const target = event.target as HTMLElement | null;
+    if (!target) return;
+    if (target.closest('a, button, input, textarea, select, [data-terminal-no-focus]')) {
+      return;
+    }
+    inputComponent?.focus();
+  }
 </script>
 
 <svelte:head>
@@ -202,9 +214,10 @@
 {:else if !browser || !isHydrated}
   <div class="h-screen flex flex-col bg-background font-mono" aria-busy="true">
     <header class="flex items-center justify-between px-4 py-3 border-b border-border">
-      <div class="flex items-center gap-2">
-        <span class="text-muted-foreground text-sm">portfolio</span>
-        <span class="text-muted-foreground/50">~</span>
+      <div class="flex items-center text-sm">
+        <span class="text-emerald-400">{promptParts.user}@{promptParts.host}</span>
+        <span class="text-muted-foreground">:</span>
+        <span class="text-sky-400">{promptParts.path}</span>
       </div>
       <Button href="/" variant="ghost" size="sm">Exit</Button>
     </header>
@@ -219,63 +232,56 @@
           <div class="h-4 w-full bg-muted rounded motion-safe:animate-pulse"></div>
         {/each}
       </div>
-    </div>
-
-    <div class="border-t border-border p-4">
-      <div class="h-10 w-full bg-muted rounded motion-safe:animate-pulse"></div>
+      <div class="h-4 w-48 bg-muted rounded motion-safe:animate-pulse"></div>
     </div>
   </div>
 {:else}
   <div class="h-screen flex flex-col bg-background font-mono">
-    <!-- Header -->
     <header class="flex items-center justify-between px-4 py-3 border-b border-border">
-      <div class="flex items-center gap-2">
-        <span class="text-muted-foreground text-sm">portfolio</span>
-        <span class="text-muted-foreground/50">~</span>
+      <div class="flex items-center text-sm">
+        <span class="text-emerald-400">{promptParts.user}@{promptParts.host}</span>
+        <span class="text-muted-foreground">:</span>
+        <span class="text-sky-400">{promptParts.path}</span>
       </div>
       <Button href="/" variant="ghost" size="sm">Exit</Button>
     </header>
 
-    <!-- Terminal content -->
     <div
       bind:this={terminalEl}
+      on:click={handleTerminalClick}
       class="flex-1 overflow-y-auto p-4 space-y-4"
     >
-      <!-- Welcome message -->
       <div class="text-muted-foreground">
         <p>Welcome to the portfolio terminal.</p>
         <p>Type <code class="bg-muted px-1.5 py-0.5 rounded text-foreground">help</code> to see available commands.</p>
       </div>
 
-      <!-- Suggested commands (only shown when no history) -->
       {#if historyEntries.length === 0}
         <TerminalChips commands={suggestedCommands} onselect={handleChipSelect} />
       {/if}
 
-      <!-- Output -->
       <TerminalOutput entries={historyEntries} />
-    </div>
 
-    <!-- Input area -->
-    <div class="border-t border-border p-4 relative">
-      <TerminalSuggestions
-        {suggestions}
-        selectedIndex={selectedSuggestion}
-        onselect={handleSuggestionSelect}
-      />
-      <TerminalInput
-        bind:this={inputComponent}
-        bind:value={inputValue}
-        onsubmit={handleSubmit}
-        onkeydown={handleKeydown}
-        oninput={updateSuggestions}
-        disabled={isProcessing}
-      />
+      <div class="relative pb-6">
+        <TerminalSuggestions
+          {suggestions}
+          selectedIndex={selectedSuggestion}
+          onselect={handleSuggestionSelect}
+        />
+        <TerminalInput
+          bind:this={inputComponent}
+          bind:value={inputValue}
+          prompt={promptParts}
+          onsubmit={handleSubmit}
+          onkeydown={handleKeydown}
+          oninput={updateSuggestions}
+          disabled={isProcessing}
+        />
+      </div>
     </div>
   </div>
 {/if}
 
-<!-- Fallback for no-JS -->
 <noscript>
   <div class="container-main py-8">
     <h1 class="text-2xl font-semibold mb-4">Terminal Mode</h1>
