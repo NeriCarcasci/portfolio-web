@@ -1,8 +1,10 @@
-
+import * as universal from '../entries/pages/projects/_slug_/_page.ts.js';
 
 export const index = 7;
 let component_cache;
-export const component = async () => component_cache ??= (await import('../entries/pages/projects/_page.svelte.js')).default;
-export const imports = ["_app/immutable/nodes/7.CPtDgxgQ.js","_app/immutable/chunks/DarRRSj2.js","_app/immutable/chunks/B__ztr1D.js","_app/immutable/chunks/CLkBtWPz.js","_app/immutable/chunks/CBgLnzEE.js","_app/immutable/chunks/CbKu2wVd.js","_app/immutable/chunks/D-_f89N0.js","_app/immutable/chunks/n0kIPK0d.js","_app/immutable/chunks/BW-tSBSB.js","_app/immutable/chunks/DoAPrP53.js","_app/immutable/chunks/DWVWipIt.js","_app/immutable/chunks/BmYFhLzU.js","_app/immutable/chunks/n1odAdrX.js","_app/immutable/chunks/lxKjXrLQ.js","_app/immutable/chunks/DYwfc2Jx.js","_app/immutable/chunks/CRT-Td4n.js","_app/immutable/chunks/BiNuEkYL.js","_app/immutable/chunks/BOfVvCVC.js"];
+export const component = async () => component_cache ??= (await import('../entries/pages/projects/_slug_/_page.svelte.js')).default;
+export { universal };
+export const universal_id = "src/routes/projects/[slug]/+page.ts";
+export const imports = ["_app/immutable/nodes/7.BU3wn883.js","_app/immutable/chunks/CBbuBPfZ.js","_app/immutable/chunks/BUApaBEI.js","_app/immutable/chunks/BOfVvCVC.js","_app/immutable/chunks/sE9xILkw.js","_app/immutable/chunks/DtJa-QzH.js","_app/immutable/chunks/BCuiBAxe.js","_app/immutable/chunks/nMl9UcZN.js","_app/immutable/chunks/DWJJRP8r.js","_app/immutable/chunks/DvtK3DxQ.js","_app/immutable/chunks/Dq0Abfz1.js","_app/immutable/chunks/DeG8hgrU.js","_app/immutable/chunks/DnJ5QhxQ.js","_app/immutable/chunks/h0hNGVar.js"];
 export const stylesheets = [];
 export const fonts = [];

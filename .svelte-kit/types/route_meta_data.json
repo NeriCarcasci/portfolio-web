@@ -8,7 +8,6 @@
 	"/blog/[slug]": [
 		"src/routes/blog/[slug]/+page.ts"
 	],
-	"/contact": [],
 	"/projects": [],
 	"/projects/[slug]": [
 		"src/routes/projects/[slug]/+page.ts"

@@ -180,7 +180,7 @@
       "_html.js"
     ],
     "css": [
-      "_app/immutable/assets/_layout.DKxl2q5o.css"
+      "_app/immutable/assets/_layout.CxvLFuiD.css"
     ]
   },
   "src/routes/+page.svelte": {
@@ -263,18 +263,6 @@
     "isEntry": true,
     "imports": [
       "_posts.js"
-    ]
-  },
-  "src/routes/contact/+page.svelte": {
-    "file": "entries/pages/contact/_page.svelte.js",
-    "name": "entries/pages/contact/_page.svelte",
-    "src": "src/routes/contact/+page.svelte",
-    "isEntry": true,
-    "imports": [
-      "_index2.js",
-      "_button.js",
-      "_about.js",
-      "_context.js"
     ]
   },
   "src/routes/projects/+page.svelte": {

@@ -10,7 +10,7 @@ return {
 	assets: new Set(["cv.pdf","favicon.svg"]),
 	mimeTypes: {".pdf":"application/pdf",".svg":"image/svg+xml"},
 	_: {
-		client: {start:"_app/immutable/entry/start.DSiYsLzN.js",app:"_app/immutable/entry/app.DU22DOzF.js",imports:["_app/immutable/entry/start.DSiYsLzN.js","_app/immutable/chunks/CPagJtz8.js","_app/immutable/chunks/B__ztr1D.js","_app/immutable/chunks/BiNuEkYL.js","_app/immutable/chunks/BUApaBEI.js","_app/immutable/chunks/C_m8kFRM.js","_app/immutable/chunks/CBgLnzEE.js","_app/immutable/entry/app.DU22DOzF.js","_app/immutable/chunks/B__ztr1D.js","_app/immutable/chunks/DarRRSj2.js","_app/immutable/chunks/C_m8kFRM.js","_app/immutable/chunks/CBgLnzEE.js","_app/immutable/chunks/BmYFhLzU.js","_app/immutable/chunks/DYwfc2Jx.js","_app/immutable/chunks/CRT-Td4n.js","_app/immutable/chunks/BiNuEkYL.js"],stylesheets:[],fonts:[],uses_env_dynamic_public:false},
+		client: {start:"_app/immutable/entry/start.BiiiTQcC.js",app:"_app/immutable/entry/app.YcfG8Qyv.js",imports:["_app/immutable/entry/start.BiiiTQcC.js","_app/immutable/chunks/Cr9WP4GD.js","_app/immutable/chunks/DtJa-QzH.js","_app/immutable/chunks/DnJ5QhxQ.js","_app/immutable/chunks/BUApaBEI.js","_app/immutable/chunks/Bq8c2gde.js","_app/immutable/chunks/CBgLnzEE.js","_app/immutable/entry/app.YcfG8Qyv.js","_app/immutable/chunks/DtJa-QzH.js","_app/immutable/chunks/sE9xILkw.js","_app/immutable/chunks/Bq8c2gde.js","_app/immutable/chunks/CBgLnzEE.js","_app/immutable/chunks/BCuiBAxe.js","_app/immutable/chunks/Db-3-XRS.js","_app/immutable/chunks/DeG8hgrU.js","_app/immutable/chunks/DnJ5QhxQ.js"],stylesheets:[],fonts:[],uses_env_dynamic_public:false},
 		nodes: [
 			__memo(() => import('./nodes/0.js')),
 			__memo(() => import('./nodes/1.js')),
@@ -20,8 +20,7 @@ return {
 			__memo(() => import('./nodes/5.js')),
 			__memo(() => import('./nodes/6.js')),
 			__memo(() => import('./nodes/7.js')),
-			__memo(() => import('./nodes/8.js')),
-			__memo(() => import('./nodes/9.js'))
+			__memo(() => import('./nodes/8.js'))
 		],
 		remotes: {
 			
@@ -63,24 +62,17 @@ return {
 				endpoint: null
 			},
 			{
-				id: "/contact",
-				pattern: /^\/contact\/?$/,
-				params: [],
-				page: { layouts: [0,], errors: [1,], leaf: 6 },
-				endpoint: null
-			},
-			{
 				id: "/projects",
 				pattern: /^\/projects\/?$/,
 				params: [],
-				page: { layouts: [0,], errors: [1,], leaf: 7 },
+				page: { layouts: [0,], errors: [1,], leaf: 6 },
 				endpoint: null
 			},
 			{
 				id: "/projects/[slug]",
 				pattern: /^\/projects\/([^/]+?)\/?$/,
 				params: [{"name":"slug","optional":false,"rest":false,"chained":false}],
-				page: { layouts: [0,], errors: [1,], leaf: 8 },
+				page: { layouts: [0,], errors: [1,], leaf: 7 },
 				endpoint: null
 			},
 			{
@@ -108,7 +100,7 @@ return {
 				id: "/terminal",
 				pattern: /^\/terminal\/?$/,
 				params: [],
-				page: { layouts: [0,], errors: [1,], leaf: 9 },
+				page: { layouts: [0,], errors: [1,], leaf: 8 },
 				endpoint: null
 			}
 		],

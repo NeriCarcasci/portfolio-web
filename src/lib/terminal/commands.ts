@@ -243,11 +243,14 @@ commands.set('contact', {
   name: 'contact',
   description: 'Contact information',
   execute: () => ({
-    html: `<div class="space-y-2">
-  <p><span class="text-muted-foreground">Email:</span> <a href="mailto:${about.email}" class="underline">${escapeHtml(about.email)}</a></p>
-  <p><span class="text-muted-foreground">GitHub:</span> <a href="${about.github}" target="_blank" rel="noopener" class="underline">${escapeHtml(about.github)}</a></p>
-  <p><span class="text-muted-foreground">LinkedIn:</span> <a href="${about.linkedin}" target="_blank" rel="noopener" class="underline">${escapeHtml(about.linkedin)}</a></p>
-</div>`
+    html: `<section class="space-y-2">
+  <h3 class="text-sm uppercase tracking-wide text-muted-foreground">Contact</h3>
+  <ul class="space-y-1">
+    <li><span class="text-muted-foreground">Email:</span> <a href="mailto:${about.email}" class="underline">${escapeHtml(about.email)}</a></li>
+    <li><span class="text-muted-foreground">GitHub:</span> <a href="${about.github}" target="_blank" rel="noopener" class="underline">${escapeHtml(about.github)}</a></li>
+    <li><span class="text-muted-foreground">LinkedIn:</span> <a href="${about.linkedin}" target="_blank" rel="noopener" class="underline">${escapeHtml(about.linkedin)}</a></li>
+  </ul>
+</section>`
   })
 });
 

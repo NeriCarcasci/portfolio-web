@@ -38,11 +38,7 @@ function DecryptingGutterBackground($$renderer, $$props) {
   $$renderer.component(($$renderer2) => {
     onDestroy(() => {
     });
-    $$renderer2.push(`<div class="fixed inset-0 -z-10 overflow-hidden pointer-events-none" role="presentation" aria-hidden="true">`);
-    {
-      $$renderer2.push("<!--[!-->");
-    }
-    $$renderer2.push(`<!--]--></div>`);
+    $$renderer2.push(`<div class="fixed inset-0 z-0 overflow-hidden pointer-events-none" role="presentation" aria-hidden="true"><canvas class="absolute inset-0 w-full h-full"></canvas></div>`);
   });
 }
 function _layout($$renderer, $$props) {
@@ -54,7 +50,6 @@ function _layout($$renderer, $$props) {
       { href: "/projects", label: "Projects" },
       { href: "/blog", label: "Blog" },
       { href: "/about", label: "About" },
-      { href: "/contact", label: "Contact" },
       { href: "/terminal", label: "Terminal" }
     ];
     const socialLinks = [
@@ -71,7 +66,7 @@ function _layout($$renderer, $$props) {
     ];
     let isTerminalPage = store_get($$store_subs ??= {}, "$page", page).url.pathname === "/terminal";
     DecryptingGutterBackground($$renderer2);
-    $$renderer2.push(`<!----> <div class="relative min-h-screen flex flex-col bg-background z-0">`);
+    $$renderer2.push(`<!----> <div class="relative min-h-screen flex flex-col z-0">`);
     if (!isTerminalPage) {
       $$renderer2.push("<!--[-->");
       $$renderer2.push(`<header class="sticky top-0 z-50 border-b border-border/50 bg-background/80 backdrop-blur-sm"><nav class="container-main py-4 flex flex-wrap items-center gap-4" aria-label="Primary"><a href="/" class="font-semibold text-lg tracking-tight">${escape_html(about.name)}</a> <ul class="flex flex-wrap items-center gap-1 flex-1 justify-center"><!--[-->`);

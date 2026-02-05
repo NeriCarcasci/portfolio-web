@@ -9,7 +9,6 @@ const GET = async () => {
     { url: "/projects", priority: "0.9", changefreq: "weekly" },
     { url: "/blog", priority: "0.9", changefreq: "daily" },
     { url: "/about", priority: "0.8", changefreq: "monthly" },
-    { url: "/contact", priority: "0.7", changefreq: "monthly" },
     { url: "/terminal", priority: "0.6", changefreq: "monthly" }
   ];
   const projectPages = projects.map((p) => ({
