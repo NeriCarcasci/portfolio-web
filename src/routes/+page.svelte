@@ -1,7 +1,6 @@
 <script lang="ts">
   import { Button, Tag } from '$components/ui';
   import {
-    Spotlight,
     CardContainer,
     CardBody,
     CardItem,
@@ -40,30 +39,8 @@
 </svelte:head>
 
 <div class="container-main space-y-24">
-  <!-- Hero with Spotlight -->
-  <section class="relative min-h-[60vh] flex items-center overflow-hidden rounded-2xl border border-white/[0.1] bg-black/50">
-    <Spotlight
-      className="-top-40 left-0 md:left-60 md:-top-20"
-      fill="hsl(152, 72%, 45%)"
-    />
-    <div class="relative z-10 px-8 py-16 md:py-24 space-y-8 max-w-3xl">
-      <div class="space-y-4">
-        <h1 class="text-4xl md:text-6xl lg:text-7xl font-bold tracking-tight text-white">
-          {about.name}
-        </h1>
-        <h2 class="text-xl md:text-2xl text-emerald-400 font-medium">
-          {about.role}
-        </h2>
-        <p class="text-lg md:text-xl text-neutral-300 max-w-2xl leading-relaxed">
-          {about.summary}
-        </p>
-      </div>
-      <div class="flex flex-wrap gap-4">
-        <Button href="/projects" size="lg">View Projects</Button>
-        <Button href="/terminal" variant="outline" size="lg">Open Terminal</Button>
-      </div>
-    </div>
-  </section>
+  <!-- Hero spacer - actual hero content is rendered in the background canvas -->
+  <div class="h-[70vh]" aria-hidden="true"></div>
 
   <!-- Featured Projects with 3D Card Effect -->
   <section class="space-y-8">

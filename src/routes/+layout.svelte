@@ -29,10 +29,11 @@
   ];
 
   let isTerminalPage = $derived($page.url.pathname === '/terminal');
+  let isHomePage = $derived($page.url.pathname === '/');
 </script>
 
 <!-- Global decrypting background -->
-<DecryptingGutterBackground />
+<DecryptingGutterBackground showHero={isHomePage} />
 
 <div class="relative min-h-screen flex flex-col z-0">
   {#if !isTerminalPage}
