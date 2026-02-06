@@ -1,6 +1,7 @@
 <script lang="ts">
 	import { onMount, onDestroy } from 'svelte';
 	import { browser } from '$app/environment';
+	import { about } from '$content/about';
 
 	// Props
 	interface Props {
@@ -24,11 +25,15 @@
 	];
 
 	// Hero content - rendered directly on canvas
+	function obfuscateEmail(email: string): string {
+		return email.replace('@', ' [at] ').replace(/\./g, ' (dot) ');
+	}
+
 	const heroContent = {
 		name: 'Neri Carcasci',
 		role: 'Software & AI Engineer',
-		taglines: ['Reliable systems.', 'Practical AI.', 'Real problems.'],
-		email: { text: 'nericarcasci [at] gmail (dot) com', href: 'mailto:nericarcasci@gmail.com' }
+		taglines: ['Reliable systems.', 'Practical AI.', 'Usable Solutions.'],
+		email: { text: obfuscateEmail(about.email), href: `mailto:${about.email}` }
 	};
 
 	// Font sizes for hero elements
