@@ -753,18 +753,8 @@
 	onMount(() => {
 		if (!browser) return;
 
-		const mediaQuery = window.matchMedia('(prefers-reduced-motion: reduce)');
-		isReducedMotion = mediaQuery.matches;
-
-		mediaQuery.addEventListener('change', (e) => {
-			isReducedMotion = e.matches;
-			if (isReducedMotion) {
-				stopAnimation();
-				render();
-			} else {
-				startAnimation();
-			}
-		});
+		// Intentionally ignore reduced-motion for the background animation.
+		isReducedMotion = false;
 
 		const initTimeout = setTimeout(() => {
 			if (containerEl && canvasEl) {
