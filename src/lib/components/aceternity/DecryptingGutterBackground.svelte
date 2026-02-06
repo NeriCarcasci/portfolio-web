@@ -5,22 +5,22 @@
 	// Props
 	interface Props {
 		showHero?: boolean;
+		maskCenterColumn?: boolean;
 	}
-	let { showHero = false }: Props = $props();
+	let { showHero = false, maskCenterColumn = false }: Props = $props();
 
 	// Phrases to reveal on hover (scattered in background)
 	const phrases = [
 		'BSc (Hons) Computing — ML & AI',
-		'OpenShift / Kubernetes',
-		'NLP Evaluation',
-		'Drift & Anomaly Detection',
+		'Cloud-Native Systems Engineering',
+		'Trustworthy and Responsible AI',
+		'Founder-Engineer',
 		'LLM Safety',
 		'Entrepreneur',
-		'FastAPI / Python',
-		'Testing & CI',
+		'Backend Engineering for ML Systems',
+		'Responsible AI & Model Governance',
 		'Production ML Systems',
-		'API Design',
-		'Model Monitoring'
+		'Sofware Engineer'
 	];
 
 	// Hero content - rendered directly on canvas
@@ -47,6 +47,9 @@
 	const DECAY_TIME = 800;
 	const SCRAMBLE_RATE = 0.005;
 	const BASE_OPACITY = 0.12;
+	const CONTENT_COLUMN_MAX = 1040; // Approx max content width (center column)
+	const CONTENT_GUTTER_FADE = 90; // Width of fade zone into the column
+	const CONTENT_EDGE_NOISE = 70; // Ragged edge variation in px
 
 	// Hero animation config
 	const HERO_REVEAL_DURATION = 2500; // 2.5 seconds to reveal from cyphertext
@@ -123,6 +126,34 @@
 			heroEdgeNoise.set(key, Math.abs(noise));
 		}
 		return heroEdgeNoise.get(key)!;
+	}
+
+	function getGutterNoise(col: number, row: number): number {
+		// Deterministic noise for staggered gutter edges
+		const seed = col * 9157 + row * 3923 + 117;
+		return Math.abs((Math.sin(seed) * 43758.5453) % 1);
+	}
+
+	function getGutterMaskAlpha(cellX: number, col: number, row: number): number {
+		if (!maskCenterColumn) return 1;
+		if (canvasWidth === 0) return 1;
+		const centerX = canvasWidth / 2;
+		const maxWidth = Math.min(CONTENT_COLUMN_MAX, canvasWidth * 0.88);
+		const baseHalf = maxWidth / 2;
+
+		const noise = getGutterNoise(col, row);
+		const raggedOffset = (noise - 0.5) * CONTENT_EDGE_NOISE;
+
+		const dx = Math.abs(cellX - centerX);
+		const inner = Math.max(0, baseHalf - CONTENT_GUTTER_FADE);
+		const outer = Math.max(inner + 1, baseHalf + CONTENT_GUTTER_FADE + raggedOffset);
+
+		if (dx <= inner) return 0;
+		if (dx >= outer) return 1;
+
+		const t = (dx - inner) / (outer - inner);
+		const jitter = (getGutterNoise(col + 13, row + 7) - 0.5) * 0.35;
+		return Math.max(0, Math.min(1, t + jitter));
 	}
 
 	function reserveHeroArea(x: number, y: number, width: number, height: number) {
@@ -519,6 +550,13 @@
 		// Render background cyphertext grid
 		for (let y = 0; y < rows; y++) {
 			for (let x = 0; x < cols; x++) {
+				const cellX = x * CELL_WIDTH;
+				const cellY = y * CELL_HEIGHT;
+				const gutterAlpha = getGutterMaskAlpha(cellX, x, y);
+				if (gutterAlpha <= 0) {
+					continue;
+				}
+
 				const isHeroCell = showHero && heroReservedCells.has(`${x},${y}`);
 
 				// For hero cells, determine if cyphertext should show based on wave position
@@ -526,17 +564,11 @@
 					if (effectiveVisibility >= 1) continue; // Hero fully visible, skip cyphertext here
 
 					// Cyphertext shows below the wave line
-					const cellX = x * CELL_WIDTH;
-					const cellY = y * CELL_HEIGHT;
-
 					// Use same wave function as clipping for perfect alignment
 					const waveYAtCell = getWaveYAtX(baseWaveY, cellX);
 
 					if (cellY < waveYAtCell) continue; // Above wave, hero is visible here
 				}
-
-				const cellX = x * CELL_WIDTH;
-				const cellY = y * CELL_HEIGHT;
 
 				const dx = cellX + CELL_WIDTH / 2 - mouseX;
 				const dy = cellY + CELL_HEIGHT / 2 - mouseY;
@@ -592,7 +624,10 @@
 				}
 
 				ctx.fillStyle = color;
+				const prevAlpha = ctx.globalAlpha;
+				ctx.globalAlpha = prevAlpha * gutterAlpha;
 				ctx.fillText(char, cellX, cellY);
+				ctx.globalAlpha = prevAlpha;
 			}
 		}
 

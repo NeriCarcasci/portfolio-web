@@ -48,6 +48,6 @@ declare module "$app/types" {
 		};
 		Pathname(): "/" | "/about" | "/about/" | "/api" | "/api/" | "/api/ask" | "/api/ask/" | "/blog" | "/blog/" | `/blog/${string}` & {} | `/blog/${string}/` & {} | "/projects" | "/projects/" | `/projects/${string}` & {} | `/projects/${string}/` & {} | "/robots.txt" | "/robots.txt/" | "/rss.xml" | "/rss.xml/" | "/sitemap.xml" | "/sitemap.xml/" | "/terminal" | "/terminal/";
 		ResolvedPathname(): `${"" | `/${string}`}${ReturnType<AppTypes['Pathname']>}`;
-		Asset(): "/cv.pdf" | "/favicon.svg" | string & {};
+		Asset(): "/cv.pdf" | "/favicon.png" | "/favicon.svg" | "/projects/building-an-ai-planning-intelligence-platform-for-ireland_demo_59c10df13a4a.mp4" | "/projects/building-an-ai-planning-intelligence-platform-for-ireland_preview_video_59c10df13a4a.mp4" | "/projects/building-trust-in-ai_diagram_8f77a7c9ae94.webp" | "/projects/building-trust-in-ai_preview_8f77a7c9ae94.webp" | "/projects/leo_image_a1a843283215.webp" | string & {};
 	}
 }

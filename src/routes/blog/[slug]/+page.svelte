@@ -27,7 +27,7 @@
 
 <BlogSeoHead {post} />
 
-<article class="container-main">
+<article class="container-main code-embedded">
   <header class="mb-12">
     <a href="/blog" class="text-muted-foreground hover:text-foreground text-sm mb-4 inline-block">
       ← Back to Blog

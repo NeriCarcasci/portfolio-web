@@ -40,6 +40,64 @@
     @apply mx-auto max-w-4xl px-6 py-8;
   }
 
+  .reading-surface {
+    @apply relative overflow-hidden rounded-2xl border border-white/10;
+    background: linear-gradient(
+      180deg,
+      rgba(255, 255, 255, 0.07) 0%,
+      rgba(255, 255, 255, 0.03) 40%,
+      rgba(0, 0, 0, 0) 100%
+    );
+    box-shadow: 0 30px 80px -50px rgba(0, 0, 0, 0.8);
+  }
+
+  .reading-surface::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    border-radius: inherit;
+    background: radial-gradient(
+      1200px 600px at 15% -20%,
+      rgba(16, 185, 129, 0.12),
+      transparent 60%
+    );
+    pointer-events: none;
+  }
+
+  .reading-surface > * {
+    position: relative;
+    z-index: 1;
+  }
+
+  .code-embedded {
+    @apply font-mono;
+  }
+
+  .code-embedded h1,
+  .code-embedded h2,
+  .code-embedded h3 {
+    color: #ecfdf5;
+  }
+
+  .code-embedded .text-muted-foreground {
+    color: rgba(167, 243, 208, 0.7);
+  }
+
+  .code-embedded .prose {
+    --tw-prose-body: #c7f9e4;
+    --tw-prose-headings: #ecfdf5;
+    --tw-prose-links: #6ee7b7;
+    --tw-prose-bold: #ecfdf5;
+    --tw-prose-quotes: #a7f3d0;
+    --tw-prose-quote-borders: rgba(110, 231, 183, 0.3);
+    --tw-prose-code: #a7f3d0;
+    --tw-prose-pre-code: #d1fae5;
+    --tw-prose-pre-bg: #0b1411;
+    --tw-prose-hr: rgba(110, 231, 183, 0.2);
+    --tw-prose-bullets: rgba(110, 231, 183, 0.7);
+    --tw-prose-counters: rgba(110, 231, 183, 0.7);
+  }
+
   .link {
     @apply text-primary underline decoration-primary/60 underline-offset-4 transition-colors hover:decoration-primary hover:text-primary;
   }

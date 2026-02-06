@@ -1,0 +1,38 @@
+{
+  "title": "AI Planning Intelligence Platform (Co-founder)",
+  "summary": "Designed and led the technical architecture for an AI-enhanced planning intelligence platform focused on the Irish planning system. Built a traceable, explainable AI workspace that combines planning law, policy, precedent and document workflows to reduce validation errors, research overhead and professional risk in regulated decision-making.",
+  "tags": [
+    "System Architecture",
+    "Explainable AI",
+    "Domain-Driven Design",
+    "Decision Support",
+    "Founder-Led Engineering"
+  ],
+  "featured": true,
+  "tech": [
+    "TypeScript",
+    "Golang",
+    "React",
+    "SQL",
+    "Document Pipelines",
+    "RAG",
+    "Agentic AI",
+    "Containers",
+    "CI/CD Pipelines",
+    "Cloud Infrastructure"
+  ],
+  "links": [
+    {
+      "label": "Company Website",
+      "url": "https://www.eireplan.ie/"
+    },
+    {
+      "label": "LinkedIn",
+      "url": "https://www.linkedin.com/company/eireplan"
+    }
+  ],
+  "order": 2,
+  "draft": false,
+  "previewVideo": "<local:demo.mp4>"
+  
+}

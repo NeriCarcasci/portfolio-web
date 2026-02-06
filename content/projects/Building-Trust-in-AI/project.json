@@ -1,0 +1,13 @@
+{
+  "title": "Explainable GNNs for Anti-Money Laundering Detection",
+  "summary": "Graduate thesis developing transparent Graph Neural Networks for cryptocurrency AML detection using the Elliptic2 dataset. Implementing multi-method explainability to make black-box models interpretable for financial compliance.",
+  "tags": ["Graph Neural Networks", "XAI", "Financial Crime", "Deep Learning", "Research"],
+  "featured": true,
+  "tech": ["Python", "PyTorch Geometric", "scikit-learn", "Post-hoc explainability", "NetworkX", "Pandas", "NumPy", "Large Data"],
+  "links": [
+  ],
+  "order": 1,
+  "draft": false,
+
+  "previewImage": "<local:diagram.png>"
+}

@@ -11,7 +11,7 @@
   <meta name="description" content={project.summary} />
 </svelte:head>
 
-<article class="container-main">
+<article class="container-main code-embedded">
   <header class="mb-12">
     <a href="/projects" class="text-muted-foreground hover:text-foreground text-sm mb-4 inline-block">
       ← Back to Projects

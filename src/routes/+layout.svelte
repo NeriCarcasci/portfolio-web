@@ -28,14 +28,25 @@
 
   let isTerminalPage = $derived($page.url.pathname === '/terminal');
   let isHomePage = $derived($page.url.pathname === '/');
+  let isBlogPost = $derived(
+    $page.url.pathname.startsWith('/blog/') && $page.url.pathname !== '/blog'
+  );
+  let isProjectDetail = $derived(
+    $page.url.pathname.startsWith('/projects/') && $page.url.pathname !== '/projects'
+  );
+  let maskCenterColumn = $derived(isBlogPost || isProjectDetail);
 </script>
 
 <!-- Global decrypting background -->
-<DecryptingGutterBackground showHero={isHomePage} />
+<DecryptingGutterBackground showHero={isHomePage} maskCenterColumn={maskCenterColumn} />
 
 <div class="relative min-h-screen flex flex-col z-0">
   {#if !isTerminalPage}
-    <header class="sticky top-0 z-50 border-b border-border/30 bg-background/95 backdrop-blur-md">
+    <header
+      class={`sticky top-0 z-50 border-b border-border/30 ${
+        maskCenterColumn ? 'bg-background' : 'bg-background/95'
+      } backdrop-blur-md`}
+    >
       <nav class="container-main py-4 flex items-center justify-between" aria-label="Primary">
         <!-- Logo/Name -->
         <a href="/" class="font-semibold text-lg tracking-tight hover:text-primary transition-colors">

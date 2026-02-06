@@ -19,6 +19,8 @@ export const ProjectSchema = z.object({
       url: z.string().min(1)
     })
   ).default([]),
+  previewImage: z.string().optional(),
+  previewVideo: z.string().optional(),
   order: z.number().int().optional(),
   draft: z.boolean().default(false)
 });
@@ -38,6 +40,8 @@ export interface ProcessedProject {
   featured: boolean;
   tech: string[];
   links: ProjectLink[];
+  previewImageUrl?: string;
+  previewVideoUrl?: string;
   order?: number;
   draft: boolean;
   html: string;
@@ -55,6 +59,8 @@ const CONTENT_DIR = 'content/projects';
 const PROJECTS_DIR = CONTENT_DIR;
 const OUTPUT_DIR = 'src/lib/generated';
 const STATIC_PROJECTS_DIR = 'static/projects';
+const PREVIEW_IMAGE_WIDTH = 720;
+const PREVIEW_IMAGE_HEIGHT = 450;
 
 const marked = new Marked(
   markedHighlight({
@@ -112,6 +118,73 @@ async function processImage(
     console.warn(`  Warning: Could not process image ${inputPath}:`, error);
     return null;
   }
+}
+
+async function processPreviewImage(
+  inputPath: string,
+  outputDir: string,
+  baseName: string
+): Promise<string | null> {
+  try {
+    const inputBuffer = await fs.readFile(inputPath);
+    const hash = hashContent(inputBuffer);
+    const outputName = `${baseName}_${hash}.webp`;
+    const outputPath = path.join(outputDir, outputName);
+
+    const stats = await fs.stat(inputPath);
+    if (stats.size < 100) {
+      console.log(`  Skipping placeholder: ${inputPath}`);
+      return null;
+    }
+
+    await sharp(inputBuffer)
+      .webp({ quality: 85 })
+      .resize({
+        width: PREVIEW_IMAGE_WIDTH,
+        height: PREVIEW_IMAGE_HEIGHT,
+        fit: 'cover',
+        withoutEnlargement: true
+      })
+      .toFile(outputPath);
+
+    return `/projects/${outputName}`;
+  } catch (error) {
+    console.warn(`  Warning: Could not process preview image ${inputPath}:`, error);
+    return null;
+  }
+}
+
+async function copyLocalAsset(
+  inputPath: string,
+  outputDir: string,
+  baseName: string
+): Promise<string | null> {
+  try {
+    const inputBuffer = await fs.readFile(inputPath);
+    const hash = hashContent(inputBuffer);
+    const ext = path.extname(inputPath);
+    const outputName = `${baseName}_${hash}${ext}`;
+    const outputPath = path.join(outputDir, outputName);
+
+    await fs.copyFile(inputPath, outputPath);
+    return `/projects/${outputName}`;
+  } catch (error) {
+    console.warn(`  Warning: Could not copy asset ${inputPath}:`, error);
+    return null;
+  }
+}
+
+function extractLocalFilename(value: string): string | null {
+  const bracketMatch = value.match(/<local:([^>]+)>/);
+  if (bracketMatch) return bracketMatch[1];
+  const plainMatch = value.match(/^local:([^\s]+)$/);
+  if (plainMatch) return plainMatch[1];
+  return null;
+}
+
+function pushUniqueAsset(assets: string[], assetUrl: string | undefined) {
+  if (!assetUrl) return;
+  if (!assets.includes(assetUrl)) assets.push(assetUrl);
 }
 
 async function processLocalAssets(
@@ -257,6 +330,55 @@ async function processProject(
   errors.push(...assetResult.errors);
   const assets = assetResult.assets;
 
+  let previewImageUrl: string | undefined;
+  let previewVideoUrl: string | undefined;
+
+  if (meta.previewImage) {
+    const local = extractLocalFilename(meta.previewImage);
+    if (local) {
+      const previewPath = path.join(projectDir, 'content', local);
+      try {
+        await fs.access(previewPath);
+        const result = await processPreviewImage(previewPath, STATIC_PROJECTS_DIR, `${slug}_preview`);
+        if (result) {
+          previewImageUrl = result;
+          pushUniqueAsset(assets, previewImageUrl);
+        }
+      } catch {
+        errors.push({
+          slug,
+          filename: local,
+          expectedPath: previewPath
+        });
+      }
+    } else {
+      previewImageUrl = meta.previewImage;
+    }
+  }
+
+  if (meta.previewVideo) {
+    const local = extractLocalFilename(meta.previewVideo);
+    if (local) {
+      const previewPath = path.join(projectDir, 'content', local);
+      try {
+        await fs.access(previewPath);
+        const result = await copyLocalAsset(previewPath, STATIC_PROJECTS_DIR, `${slug}_preview_video`);
+        if (result) {
+          previewVideoUrl = result;
+          pushUniqueAsset(assets, previewVideoUrl);
+        }
+      } catch {
+        errors.push({
+          slug,
+          filename: local,
+          expectedPath: previewPath
+        });
+      }
+    } else {
+      previewVideoUrl = meta.previewVideo;
+    }
+  }
+
   const html = await marked.parse(assetResult.markdown);
   const text = stripHtml(html);
 
@@ -269,6 +391,8 @@ async function processProject(
       featured: meta.featured,
       tech: meta.tech,
       links: meta.links,
+      previewImageUrl,
+      previewVideoUrl,
       order: meta.order,
       draft: meta.draft,
       html,
@@ -302,6 +426,8 @@ export interface Project {
   featured: boolean;
   tech: string[];
   links: ProjectLink[];
+  previewImageUrl?: string;
+  previewVideoUrl?: string;
   order?: number;
   draft: boolean;
   html: string;
