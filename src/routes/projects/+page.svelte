@@ -1,7 +1,9 @@
 <script lang="ts">
   import { Tag } from '$components/ui';
   import { CardContainer, CardBody, CardItem } from '$components/aceternity';
+  import SeoHead from '$components/SeoHead.svelte';
   import { getAllProjects } from '$content/projects';
+  import { BASE_URL, SITE_NAME } from '$lib/config';
 
   const projects = getAllProjects();
   const SUMMARY_MAX = 160;
@@ -23,12 +25,41 @@
       assets.find((asset) => VIDEO_EXTS.some((ext) => asset.toLowerCase().endsWith(ext)));
     return { image, video };
   }
+
+  const pageDescription = 'Selected projects showcasing work in AI/ML, APIs, and full-stack development.';
+  const pageTitle = `Projects | ${SITE_NAME}`;
+  const pageKeywords = Array.from(
+    new Set(projects.flatMap((project) => project.tags))
+  );
+  const collectionSchema = {
+    '@type': 'CollectionPage',
+    name: 'Projects',
+    description: pageDescription,
+    url: `${BASE_URL}/projects`
+  };
+  const itemListSchema = {
+    '@type': 'ItemList',
+    itemListElement: projects.map((project, index) => ({
+      '@type': 'ListItem',
+      position: index + 1,
+      name: project.title,
+      url: `${BASE_URL}/projects/${project.slug}`
+    }))
+  };
+  const pageJsonLd = [collectionSchema, itemListSchema];
 </script>
 
-<svelte:head>
-  <title>Projects - Portfolio</title>
-  <meta name="description" content="Selected projects showcasing work in AI/ML, APIs, and full-stack development." />
-</svelte:head>
+<SeoHead
+  title={pageTitle}
+  description={pageDescription}
+  canonical="/projects"
+  keywords={pageKeywords}
+  breadcrumbs={[
+    { name: 'Home', url: '/' },
+    { name: 'Projects', url: '/projects' }
+  ]}
+  jsonLd={pageJsonLd}
+/>
 
 <div class="container-main">
   <header class="mb-12">

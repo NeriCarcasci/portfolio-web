@@ -12,6 +12,8 @@
   import { getSuggestions, getTabCompletion, type Suggestion } from '$terminal/suggest';
   import { commands, executeCommand } from '$terminal/commands';
   import { getCwd, getPromptParts } from '$terminal/filesystem';
+  import SeoHead from '$components/SeoHead.svelte';
+  import { SITE_NAME } from '$lib/config';
   import { onMount } from 'svelte';
 
   let historyEntries = $state<HistoryEntry[]>([]);
@@ -197,10 +199,12 @@
   }
 </script>
 
-<svelte:head>
-  <title>Terminal - Portfolio</title>
-  <meta name="description" content="Interactive terminal interface to explore the portfolio." />
-</svelte:head>
+<SeoHead
+  title={`Terminal | ${SITE_NAME}`}
+  description="Interactive terminal interface to explore the portfolio."
+  canonical="/terminal"
+  noindex={true}
+/>
 
 {#if terminalError}
   <div class="container-main py-12">

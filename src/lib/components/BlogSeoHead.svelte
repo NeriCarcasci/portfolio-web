@@ -1,5 +1,15 @@
 <script lang="ts">
-  import { BASE_URL, SITE_NAME, SITE_LOCALE } from '$lib/config';
+  import {
+    BASE_URL,
+    SITE_NAME,
+    SITE_LOCALE,
+    DEFAULT_OG_IMAGE,
+    SITE_LOGO,
+    TWITTER_HANDLE,
+    ORG_NAME,
+    ORG_URL
+  } from '$lib/config';
+  import { about } from '$content/about';
   import { getPersonById } from '$lib/generated/people';
   import type { BlogPost } from '$lib/blog';
 
@@ -12,13 +22,13 @@
   const canonicalUrl = $derived(`${BASE_URL}/blog/${post.slug}`);
 
   // Only create absolute image URL for local images (starting with /)
-  const imageUrl = $derived(
-    post.coverUrl
-      ? post.coverUrl.startsWith('/')
-        ? `${BASE_URL}${post.coverUrl}`
-        : post.coverUrl
-      : undefined
-  );
+  const imageUrl = $derived(() => {
+    const raw = post.coverUrl || DEFAULT_OG_IMAGE;
+    if (!raw) return undefined;
+    return raw.startsWith('/')
+      ? `${BASE_URL}${raw}`
+      : raw;
+  });
 
   // Only include dimensions if we actually know them (local processed images)
   const hasKnownDimensions = $derived(
@@ -27,6 +37,7 @@
 
   const publishedTime = $derived(new Date(post.date).toISOString());
   const modifiedTime = $derived(post.modified ? new Date(post.modified).toISOString() : publishedTime);
+  const twitterCard = $derived(imageUrl ? 'summary_large_image' : 'summary');
 
   const authors = $derived(
     post.people
@@ -36,10 +47,79 @@
 
   const authorName = $derived(authors[0]?.name || SITE_NAME);
   const authorUrl = $derived(authors[0]?.url || BASE_URL);
+  const schemaLocale = $derived(SITE_LOCALE.replace('_', '-'));
+
+  const personNode = $derived({
+    '@type': 'Person',
+    '@id': `${BASE_URL}#person`,
+    name: about.name,
+    url: BASE_URL,
+    jobTitle: about.role,
+    sameAs: [about.github, about.linkedin].filter(Boolean),
+    ...(SITE_LOGO ? { image: SITE_LOGO.startsWith('http') ? SITE_LOGO : `${BASE_URL}${SITE_LOGO}` } : {})
+  });
+
+  const websiteNode = $derived({
+    '@type': 'WebSite',
+    '@id': `${BASE_URL}#website`,
+    url: BASE_URL,
+    name: SITE_NAME,
+    inLanguage: schemaLocale,
+    description: about.summary,
+    publisher: ORG_NAME ? { '@id': `${BASE_URL}#organization` } : { '@id': `${BASE_URL}#person` }
+  });
+
+  const organizationNode = $derived(
+    ORG_NAME
+      ? {
+          '@type': 'Organization',
+          '@id': `${BASE_URL}#organization`,
+          name: ORG_NAME,
+          url: ORG_URL || BASE_URL,
+          sameAs: [about.github, about.linkedin].filter(Boolean),
+          ...(SITE_LOGO ? { logo: SITE_LOGO.startsWith('http') ? SITE_LOGO : `${BASE_URL}${SITE_LOGO}` } : {})
+        }
+      : null
+  );
+
+  const webPageNode = $derived({
+    '@type': 'WebPage',
+    '@id': canonicalUrl,
+    url: canonicalUrl,
+    name: `${post.title} | ${SITE_NAME}`,
+    description: post.description,
+    isPartOf: { '@id': `${BASE_URL}#website` },
+    about: { '@id': `${BASE_URL}#person` }
+  });
+
+  const publisherNode = $derived(() => {
+    if (ORG_NAME) {
+      return {
+        '@type': 'Organization',
+        name: ORG_NAME,
+        url: ORG_URL || BASE_URL,
+        ...(SITE_LOGO && {
+          logo: {
+            '@type': 'ImageObject',
+            url: SITE_LOGO.startsWith('http') ? SITE_LOGO : `${BASE_URL}${SITE_LOGO}`
+          }
+        })
+      };
+    }
+    return {
+      '@type': 'Person',
+      name: about.name,
+      url: BASE_URL
+    };
+  });
 
   const jsonLd = $derived({
     '@context': 'https://schema.org',
     '@graph': [
+      websiteNode,
+      webPageNode,
+      personNode,
+      ...(organizationNode ? [organizationNode] : []),
       {
         '@type': 'BlogPosting',
         '@id': `${canonicalUrl}#article`,
@@ -53,11 +133,7 @@
           name: authorName,
           url: authorUrl
         },
-        publisher: {
-          '@type': 'Organization',
-          name: SITE_NAME,
-          url: BASE_URL
-        },
+        publisher: publisherNode,
         mainEntityOfPage: {
           '@type': 'WebPage',
           '@id': canonicalUrl
@@ -139,12 +215,16 @@
   {/each}
 
   <!-- Twitter -->
-  <meta name="twitter:card" content="summary_large_image" />
+  <meta name="twitter:card" content={twitterCard} />
   <meta name="twitter:url" content={canonicalUrl} />
   <meta name="twitter:title" content={post.title} />
   <meta name="twitter:description" content={post.description} />
   {#if imageUrl}
     <meta name="twitter:image" content={imageUrl} />
+  {/if}
+  {#if TWITTER_HANDLE}
+    <meta name="twitter:site" content={TWITTER_HANDLE} />
+    <meta name="twitter:creator" content={TWITTER_HANDLE} />
   {/if}
 
   <!-- JSON-LD -->

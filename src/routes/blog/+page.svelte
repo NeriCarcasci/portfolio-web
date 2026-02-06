@@ -1,8 +1,9 @@
 <script lang="ts">
   import { Tag } from '$components/ui';
   import { BentoGrid, BentoGridItem } from '$components/aceternity';
+  import SeoHead from '$components/SeoHead.svelte';
   import { getAllPosts, getAllTags, searchPosts } from '$lib/blog';
-  import { BASE_URL, SITE_NAME, SITE_LOCALE } from '$lib/config';
+  import { BASE_URL, SITE_NAME } from '$lib/config';
 
   const allPosts = getAllPosts();
   const allTags = getAllTags();
@@ -44,38 +45,43 @@
   const canonicalUrl = `${BASE_URL}/blog`;
   const pageTitle = `Blog | ${SITE_NAME}`;
   const pageDescription = 'Articles on software engineering, machine learning, and building products.';
+  const pageKeywords = allTags;
 
-  const jsonLd = {
-    '@context': 'https://schema.org',
+  const blogSchema = {
     '@type': 'Blog',
     name: `${SITE_NAME} Blog`,
     url: canonicalUrl,
     description: pageDescription
   };
+
+  const itemListSchema = {
+    '@type': 'ItemList',
+    itemListElement: allPosts.map((post, index) => ({
+      '@type': 'ListItem',
+      position: index + 1,
+      name: post.title,
+      url: `${BASE_URL}/blog/${post.slug}`
+    }))
+  };
+
+  const pageJsonLd = [blogSchema, itemListSchema];
 </script>
 
+<SeoHead
+  title={pageTitle}
+  description={pageDescription}
+  canonical={canonicalUrl}
+  type="website"
+  keywords={pageKeywords}
+  breadcrumbs={[
+    { name: 'Home', url: '/' },
+    { name: 'Blog', url: '/blog' }
+  ]}
+  jsonLd={pageJsonLd}
+/>
+
 <svelte:head>
-  <title>{pageTitle}</title>
-  <meta name="title" content={pageTitle} />
-  <meta name="description" content={pageDescription} />
-  <meta name="robots" content="index, follow" />
-  <link rel="canonical" href={canonicalUrl} />
-
-  <meta property="og:type" content="website" />
-  <meta property="og:url" content={canonicalUrl} />
-  <meta property="og:title" content={pageTitle} />
-  <meta property="og:description" content={pageDescription} />
-  <meta property="og:site_name" content={SITE_NAME} />
-  <meta property="og:locale" content={SITE_LOCALE} />
-
-  <meta name="twitter:card" content="summary" />
-  <meta name="twitter:url" content={canonicalUrl} />
-  <meta name="twitter:title" content={pageTitle} />
-  <meta name="twitter:description" content={pageDescription} />
-
   <link rel="alternate" type="application/rss+xml" title="{SITE_NAME} Blog RSS" href="{BASE_URL}/rss.xml" />
-
-  {@html `<script type="application/ld+json">${JSON.stringify(jsonLd)}</script>`}
 </svelte:head>
 
 <div class="container-main">

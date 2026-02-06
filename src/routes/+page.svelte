@@ -7,6 +7,7 @@
     BentoGrid,
     BentoGridItem
   } from '$components/aceternity';
+  import SeoHead from '$components/SeoHead.svelte';
   import { about } from '$content/about';
   import { getFeaturedProjects } from '$content/projects';
   import { getFeaturedPosts } from '$lib/blog';
@@ -16,6 +17,9 @@
   const SUMMARY_MAX = 150;
   const IMAGE_EXTS = ['.webp', '.png', '.jpg', '.jpeg', '.gif'];
   const VIDEO_EXTS = ['.mp4', '.webm', '.mov'];
+  const pageKeywords = about.skills.flatMap((skill) =>
+    skill.split(',').map((part) => part.trim()).filter(Boolean)
+  );
 
   function formatDate(dateStr: string): string {
     return new Date(dateStr).toLocaleDateString('en-US', {
@@ -42,20 +46,12 @@
   }
 </script>
 
-<svelte:head>
-  <title>{about.name} - {about.role}</title>
-  <meta name="description" content={about.summary} />
-  <link rel="canonical" href="/" />
-  {@html `<script type="application/ld+json">${JSON.stringify({
-    '@context': 'https://schema.org',
-    '@type': 'Person',
-    name: about.name,
-    jobTitle: about.role,
-    description: about.summary,
-    url: '/',
-    sameAs: [about.github, about.linkedin]
-  })}</script>`}
-</svelte:head>
+<SeoHead
+  title={`${about.name} - ${about.role}`}
+  description={about.summary}
+  canonical="/"
+  keywords={pageKeywords}
+/>
 
 <div class="container-main space-y-24">
   <!-- Hero spacer - actual hero content is rendered in the background canvas -->

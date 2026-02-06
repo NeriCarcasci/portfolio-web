@@ -1,3 +1,13 @@
 export const BASE_URL = 'https://neri.wtf';
 export const SITE_NAME = 'Portfolio';
-export const SITE_LOCALE = 'en_US';
+export const SITE_LOCALE = 'en_GB';
+export const DEFAULT_OG_IMAGE = '';
+export const SITE_LOGO = '';
+export const TWITTER_HANDLE = '';
+export const SITE_CITY = 'Dublin';
+export const SITE_REGION = 'Ireland';
+export const SITE_COUNTRY = 'IE';
+export const SITE_LATITUDE = '53.350140';
+export const SITE_LONGITUDE = '-6.266155';
+export const ORG_NAME = 'Neri Carcasci';
+export const ORG_URL = '';

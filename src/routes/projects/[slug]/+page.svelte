@@ -1,15 +1,47 @@
 <script lang="ts">
   import { Button, Tag } from '$components/ui';
+  import SeoHead from '$components/SeoHead.svelte';
+  import { BASE_URL, SITE_NAME } from '$lib/config';
   import type { PageData } from './$types';
 
   let { data }: { data: PageData } = $props();
   const project = $derived(data.project);
+
+  const imageExts = ['.webp', '.png', '.jpg', '.jpeg', '.gif'];
+  const projectImage = $derived.by(() => {
+    const candidate =
+      project.previewImageUrl ||
+      project.assets?.find((asset) =>
+        imageExts.some((ext) => asset.toLowerCase().endsWith(ext))
+      );
+    if (!candidate) return undefined;
+    return candidate.startsWith('http') ? candidate : `${BASE_URL}${candidate}`;
+  });
+
+  const projectSchema = $derived({
+    '@type': 'CreativeWork',
+    '@id': `${BASE_URL}/projects/${project.slug}#project`,
+    url: `${BASE_URL}/projects/${project.slug}`,
+    headline: project.title,
+    description: project.summary,
+    keywords: project.tags.join(', '),
+    author: { '@id': `${BASE_URL}#person` },
+    ...(projectImage ? { image: projectImage } : {})
+  });
 </script>
 
-<svelte:head>
-  <title>{project.title} - Projects</title>
-  <meta name="description" content={project.summary} />
-</svelte:head>
+<SeoHead
+  title={`${project.title} | ${SITE_NAME}`}
+  description={project.summary}
+  canonical={`/projects/${project.slug}`}
+  keywords={project.tags}
+  breadcrumbs={[
+    { name: 'Home', url: '/' },
+    { name: 'Projects', url: '/projects' },
+    { name: project.title, url: `/projects/${project.slug}` }
+  ]}
+  jsonLd={projectSchema}
+/>
 
 <article class="container-main code-embedded">
   <header class="mb-12">

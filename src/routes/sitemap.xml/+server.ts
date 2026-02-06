@@ -11,8 +11,7 @@ export const GET: RequestHandler = async () => {
     { url: '/', priority: '1.0', changefreq: 'weekly' },
     { url: '/projects', priority: '0.9', changefreq: 'weekly' },
     { url: '/blog', priority: '0.9', changefreq: 'daily' },
-    { url: '/about', priority: '0.8', changefreq: 'monthly' },
-    { url: '/terminal', priority: '0.6', changefreq: 'monthly' }
+    { url: '/about', priority: '0.8', changefreq: 'monthly' }
   ];
 
   const projectPages = projects.map((p) => ({

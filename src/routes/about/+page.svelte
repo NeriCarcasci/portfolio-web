@@ -1,11 +1,30 @@
 <script lang="ts">
+  import SeoHead from '$components/SeoHead.svelte';
   import { about } from '$content/about';
+  import { BASE_URL } from '$lib/config';
+
+  const pageKeywords = about.skills.flatMap((skill) =>
+    skill.split(',').map((part) => part.trim()).filter(Boolean)
+  );
+  const profileSchema = {
+    '@type': 'ProfilePage',
+    name: `About ${about.name}`,
+    url: `${BASE_URL}/about`,
+    description: about.bio.slice(0, 160)
+  };
 </script>
 
-<svelte:head>
-  <title>About - {about.name}</title>
-  <meta name="description" content={about.bio.slice(0, 160)} />
-</svelte:head>
+<SeoHead
+  title={`About - ${about.name}`}
+  description={about.bio.slice(0, 160)}
+  canonical="/about"
+  keywords={pageKeywords}
+  breadcrumbs={[
+    { name: 'Home', url: '/' },
+    { name: 'About', url: '/about' }
+  ]}
+  jsonLd={profileSchema}
+/>
 
 <div class="container-main">
   <header class="mb-12">
