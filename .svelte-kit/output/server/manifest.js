@@ -7,10 +7,10 @@ function __memo(fn) {
 return {
 	appDir: "_app",
 	appPath: "_app",
-	assets: new Set(["cv.pdf","favicon.svg"]),
-	mimeTypes: {".pdf":"application/pdf",".svg":"image/svg+xml"},
+	assets: new Set(["about/README.md","cv.pdf","favicon.png","favicon.svg","projects/building-an-ai-planning-intelligence-platform-for-ireland_demo_59c10df13a4a.mp4","projects/building-an-ai-planning-intelligence-platform-for-ireland_preview_video_59c10df13a4a.mp4","projects/building-trust-in-ai_diagram_8f77a7c9ae94.webp","projects/building-trust-in-ai_preview_8f77a7c9ae94.webp","projects/leo_image_a1a843283215.webp"]),
+	mimeTypes: {".md":"text/markdown",".pdf":"application/pdf",".png":"image/png",".svg":"image/svg+xml",".mp4":"video/mp4",".webp":"image/webp"},
 	_: {
-		client: {start:"_app/immutable/entry/start.BiiiTQcC.js",app:"_app/immutable/entry/app.YcfG8Qyv.js",imports:["_app/immutable/entry/start.BiiiTQcC.js","_app/immutable/chunks/Cr9WP4GD.js","_app/immutable/chunks/DtJa-QzH.js","_app/immutable/chunks/DnJ5QhxQ.js","_app/immutable/chunks/BUApaBEI.js","_app/immutable/chunks/Bq8c2gde.js","_app/immutable/chunks/CBgLnzEE.js","_app/immutable/entry/app.YcfG8Qyv.js","_app/immutable/chunks/DtJa-QzH.js","_app/immutable/chunks/sE9xILkw.js","_app/immutable/chunks/Bq8c2gde.js","_app/immutable/chunks/CBgLnzEE.js","_app/immutable/chunks/BCuiBAxe.js","_app/immutable/chunks/Db-3-XRS.js","_app/immutable/chunks/DeG8hgrU.js","_app/immutable/chunks/DnJ5QhxQ.js"],stylesheets:[],fonts:[],uses_env_dynamic_public:false},
+		client: {start:"_app/immutable/entry/start.CEBKztLq.js",app:"_app/immutable/entry/app.Cmo-y7Bf.js",imports:["_app/immutable/entry/start.CEBKztLq.js","_app/immutable/chunks/Cwa-NJ8l.js","_app/immutable/chunks/_eWs1X5C.js","_app/immutable/chunks/DtM9XZlj.js","_app/immutable/chunks/BUApaBEI.js","_app/immutable/chunks/45n6dgAp.js","_app/immutable/entry/app.Cmo-y7Bf.js","_app/immutable/chunks/_eWs1X5C.js","_app/immutable/chunks/CzMFQgrY.js","_app/immutable/chunks/45n6dgAp.js","_app/immutable/chunks/CMxh1oUs.js","_app/immutable/chunks/BfQRXcNO.js","_app/immutable/chunks/Cnogj6Rd.js","_app/immutable/chunks/DtM9XZlj.js"],stylesheets:[],fonts:[],uses_env_dynamic_public:false},
 		nodes: [
 			__memo(() => import('./nodes/0.js')),
 			__memo(() => import('./nodes/1.js')),

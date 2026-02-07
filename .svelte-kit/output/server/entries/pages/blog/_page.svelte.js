@@ -1,11 +1,11 @@
-import { a4 as head, $ as attr, _ as ensure_array_like, a1 as attr_class, a5 as stringify } from "../../../chunks/index2.js";
+import { ab as head, a9 as attr, a2 as ensure_array_like, a8 as attr_class, _ as stringify } from "../../../chunks/index2.js";
 import "clsx";
 import { T as Tag } from "../../../chunks/tag.js";
 import { B as BentoGrid, a as BentoGridItem } from "../../../chunks/BentoGridItem.js";
+import { S as SeoHead } from "../../../chunks/SeoHead.js";
 import { b as getAllTags, s as searchPosts, g as getAllPosts } from "../../../chunks/posts.js";
-import { S as SITE_NAME, B as BASE_URL, a as SITE_LOCALE } from "../../../chunks/config.js";
+import { B as BASE_URL, S as SITE_NAME } from "../../../chunks/config.js";
 import { e as escape_html } from "../../../chunks/context.js";
-import { h as html } from "../../../chunks/html.js";
 function _page($$renderer, $$props) {
   $$renderer.component(($$renderer2) => {
     const allPosts = getAllPosts();
@@ -25,20 +25,36 @@ function _page($$renderer, $$props) {
     const canonicalUrl = `${BASE_URL}/blog`;
     const pageTitle = `Blog | ${SITE_NAME}`;
     const pageDescription = "Articles on software engineering, machine learning, and building products.";
-    const jsonLd = {
-      "@context": "https://schema.org",
+    const pageKeywords = allTags;
+    const blogSchema = {
       "@type": "Blog",
       name: `${SITE_NAME} Blog`,
       url: canonicalUrl,
       description: pageDescription
     };
+    const itemListSchema = {
+      "@type": "ItemList",
+      itemListElement: allPosts.map((post, index) => ({
+        "@type": "ListItem",
+        position: index + 1,
+        name: post.title,
+        url: `${BASE_URL}/blog/${post.slug}`
+      }))
+    };
+    const pageJsonLd = [blogSchema, itemListSchema];
     head("u4k2t", $$renderer2, ($$renderer3) => {
-      $$renderer3.title(($$renderer4) => {
-        $$renderer4.push(`<title>${escape_html(pageTitle)}</title>`);
-      });
-      $$renderer3.push(`<meta name="title"${attr("content", pageTitle)}/> <meta name="description"${attr("content", pageDescription)}/> <meta name="robots" content="index, follow"/> <link rel="canonical"${attr("href", canonicalUrl)}/> <meta property="og:type" content="website"/> <meta property="og:url"${attr("content", canonicalUrl)}/> <meta property="og:title"${attr("content", pageTitle)}/> <meta property="og:description"${attr("content", pageDescription)}/> <meta property="og:site_name"${attr("content", SITE_NAME)}/> <meta property="og:locale"${attr("content", SITE_LOCALE)}/> <meta name="twitter:card" content="summary"/> <meta name="twitter:url"${attr("content", canonicalUrl)}/> <meta name="twitter:title"${attr("content", pageTitle)}/> <meta name="twitter:description"${attr("content", pageDescription)}/> <link rel="alternate" type="application/rss+xml"${attr("title", `${stringify(SITE_NAME)} Blog RSS`)}${attr("href", `${stringify(BASE_URL)}/rss.xml`)}/> ${html(`<script type="application/ld+json">${JSON.stringify(jsonLd)}<\/script>`)}`);
+      $$renderer3.push(`<link rel="alternate" type="application/rss+xml"${attr("title", `${stringify(SITE_NAME)} Blog RSS`)}${attr("href", `${stringify(BASE_URL)}/rss.xml`)}/>`);
     });
-    $$renderer2.push(`<div class="container-main"><header class="mb-8"><h1 class="text-3xl md:text-4xl font-semibold text-white">Blog</h1> <p class="text-neutral-400 mt-2">Writing on engineering, ML, and building products.</p></header> <div class="mb-10 space-y-4"><div class="flex gap-4"><input type="search"${attr("value", searchQuery)} placeholder="Search posts..." class="flex-1 px-4 py-2 bg-neutral-900 border border-white/[0.2] rounded-md text-white placeholder:text-neutral-500 focus:outline-none focus:ring-2 focus:ring-emerald-500"/> `);
+    SeoHead($$renderer2, {
+      title: pageTitle,
+      description: pageDescription,
+      canonical: canonicalUrl,
+      type: "website",
+      keywords: pageKeywords,
+      breadcrumbs: [{ name: "Home", url: "/" }, { name: "Blog", url: "/blog" }],
+      jsonLd: pageJsonLd
+    });
+    $$renderer2.push(`<!----> <div class="container-main"><header class="mb-8"><h1 class="text-3xl md:text-4xl font-semibold text-white">Blog</h1> <p class="text-neutral-400 mt-2">Writing on engineering, ML, and building products.</p></header> <div class="mb-10 space-y-4"><div class="flex gap-4"><input type="search"${attr("value", searchQuery)} placeholder="Search posts..." class="flex-1 px-4 py-2 bg-neutral-900 border border-white/[0.2] rounded-md text-white placeholder:text-neutral-500 focus:outline-none focus:ring-2 focus:ring-emerald-500"/> `);
     {
       $$renderer2.push("<!--[!-->");
     }

@@ -1,23 +1,200 @@
-import { a4 as head, _ as ensure_array_like } from "../../../chunks/index2.js";
+import { a2 as ensure_array_like } from "../../../chunks/index2.js";
 import "@sveltejs/kit/internal";
 import "../../../chunks/exports.js";
 import "../../../chunks/utils.js";
+import { e as escape_html } from "../../../chunks/context.js";
 import "clsx";
 import "@sveltejs/kit/internal/server";
 import "../../../chunks/state.svelte.js";
 import { B as Button } from "../../../chunks/button.js";
-import { b as getProject, g as getAllProjects } from "../../../chunks/projects.js";
+import { g as getAllProjects } from "../../../chunks/projects.js";
 import { a as about } from "../../../chunks/about.js";
-import { d as getPostBySlug, g as getAllPosts } from "../../../chunks/posts.js";
+import { g as getAllPosts } from "../../../chunks/posts.js";
+import { S as SeoHead } from "../../../chunks/SeoHead.js";
+import { S as SITE_NAME } from "../../../chunks/config.js";
+const TERMINAL_USER = "neric";
+const TERMINAL_HOST = "portfolio";
+const HOME_PATH = "/";
+let cwd = HOME_PATH;
+function createFile(content) {
+  return {
+    type: "file",
+    content: typeof content === "function" ? content : () => content
+  };
+}
+function buildProjectFile(project) {
+  const linkLine = project.links?.length ? `Links:
+${project.links.map((link) => `- ${link.label}: ${link.url}`).join("\n")}` : "";
+  return [
+    `Title: ${project.title}`,
+    `Summary: ${project.summary}`,
+    project.tags.length ? `Tags: ${project.tags.join(", ")}` : "",
+    project.tech.length ? `Tech: ${project.tech.join(", ")}` : "",
+    linkLine ? `
+${linkLine}` : "",
+    "",
+    `Open: /projects/${project.slug}`
+  ].filter(Boolean).join("\n");
+}
+function buildPostFile(post) {
+  return [
+    `Title: ${post.title}`,
+    `Date: ${post.date}`,
+    `Summary: ${post.description}`,
+    `Tags: ${post.tags.join(", ")}`,
+    "",
+    `Open: /blog/${post.slug}`
+  ].join("\n");
+}
+function buildReadme() {
+  return [
+    "Welcome to the portfolio terminal.",
+    "",
+    "Try:",
+    "- ls",
+    "- cd /projects",
+    "- ls",
+    "- cat trusted-ai-metrics.txt",
+    "- cat about.txt",
+    "",
+    "Commands:",
+    "  help, ls, cd, cat, pwd, whoami, clear, exit"
+  ].join("\n");
+}
+function buildAbout() {
+  return [
+    `${about.name} - ${about.role}`,
+    "",
+    about.summary,
+    "",
+    about.bio,
+    "",
+    `Skills: ${about.skills.join(", ")}`
+  ].join("\n");
+}
+function buildContact() {
+  return [
+    `Email: ${about.email}`,
+    `GitHub: ${about.github}`,
+    `LinkedIn: ${about.linkedin}`,
+    `CV: ${about.cvUrl}`
+  ].join("\n");
+}
+function buildFileSystem() {
+  const projectsDir = { type: "dir", children: {} };
+  for (const project of getAllProjects()) {
+    projectsDir.children[`${project.slug}.txt`] = createFile(() => buildProjectFile(project));
+  }
+  const blogDir = { type: "dir", children: {} };
+  for (const post of getAllPosts()) {
+    blogDir.children[`${post.slug}.md`] = createFile(() => buildPostFile(post));
+  }
+  return {
+    type: "dir",
+    children: {
+      projects: projectsDir,
+      blog: blogDir,
+      "readme.md": createFile(buildReadme),
+      "about.txt": createFile(buildAbout),
+      "contact.txt": createFile(buildContact)
+    }
+  };
+}
+const fsRoot = buildFileSystem();
+function getNode(path) {
+  const normalized = normalizePath(path);
+  const parts = normalized.split("/").filter(Boolean);
+  let node = fsRoot;
+  for (const part of parts) {
+    if (node.type !== "dir") return null;
+    const next = node.children[part];
+    if (!next) return null;
+    node = next;
+  }
+  return node;
+}
+function normalizePath(path) {
+  if (!path) return HOME_PATH;
+  const parts = path.split("/").filter(Boolean);
+  const stack = [];
+  for (const part of parts) {
+    if (part === "." || part === "") continue;
+    if (part === "..") {
+      stack.pop();
+      continue;
+    }
+    stack.push(part);
+  }
+  return `/${stack.join("/")}`;
+}
+function resolvePath(input, base = cwd) {
+  if (!input || input === ".") return normalizePath(base);
+  let raw = input;
+  if (raw.startsWith("~")) {
+    raw = `${HOME_PATH}${raw.slice(1)}`;
+  }
+  if (!raw.startsWith("/")) {
+    raw = `${base.replace(/\/$/, "")}/${raw}`;
+  }
+  return normalizePath(raw);
+}
+function listDir(path) {
+  const node = getNode(path);
+  if (!node || node.type !== "dir") return null;
+  return Object.entries(node.children).map(([name, child]) => ({ name, type: child.type })).sort((a, b) => {
+    if (a.type !== b.type) {
+      return a.type === "dir" ? -1 : 1;
+    }
+    return a.name.localeCompare(b.name);
+  });
+}
+function isDir(path) {
+  const node = getNode(path);
+  return node?.type === "dir";
+}
+function isFile(path) {
+  const node = getNode(path);
+  return node?.type === "file";
+}
+function readFile(path) {
+  const node = getNode(path);
+  if (!node || node.type !== "file") return null;
+  return node.content();
+}
+function setCwd(path) {
+  cwd = normalizePath(path);
+}
+function getCwd() {
+  return cwd;
+}
+function formatPathForPrompt(path) {
+  const normalized = normalizePath(path);
+  {
+    return normalized === "/" ? "~" : `~${normalized}`;
+  }
+}
+function getPromptParts(path = cwd) {
+  return {
+    user: TERMINAL_USER,
+    host: TERMINAL_HOST,
+    path: formatPathForPrompt(path),
+    symbol: "$"
+  };
+}
 function escapeHtml(text) {
   return text.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;").replace(/"/g, "&quot;");
 }
-function formatDate(dateStr) {
-  return new Date(dateStr).toLocaleDateString("en-US", {
-    year: "numeric",
-    month: "short",
-    day: "numeric"
-  });
+function formatLs(entries) {
+  if (entries.length === 0) return "";
+  return entries.map((entry) => entry.type === "dir" ? `${entry.name}/` : entry.name).join("\n");
+}
+function renderPre(text) {
+  return `<pre class="whitespace-pre-wrap">${escapeHtml(text)}</pre>`;
+}
+function basename(path) {
+  const normalized = path.replace(/\/+$/, "");
+  const parts = normalized.split("/").filter(Boolean);
+  return parts[parts.length - 1] ?? "/";
 }
 const commands = /* @__PURE__ */ new Map();
 commands.set("help", {
@@ -28,218 +205,84 @@ commands.set("help", {
   <p class="text-muted-foreground">Available commands:</p>
   <ul class="space-y-1 ml-4">
     <li><code class="text-foreground">help</code> <span class="text-muted-foreground">- Show this help</span></li>
-    <li><code class="text-foreground">home</code> <span class="text-muted-foreground">- Go to home page</span></li>
-    <li><code class="text-foreground">projects</code> <span class="text-muted-foreground">- List all projects</span></li>
-    <li><code class="text-foreground">project &lt;slug&gt;</code> <span class="text-muted-foreground">- Show project details</span></li>
-    <li><code class="text-foreground">blog</code> <span class="text-muted-foreground">- List blog posts</span></li>
-    <li><code class="text-foreground">post &lt;slug&gt;</code> <span class="text-muted-foreground">- Show blog post</span></li>
-    <li><code class="text-foreground">open &lt;slug&gt;</code> <span class="text-muted-foreground">- Navigate to page</span></li>
-    <li><code class="text-foreground">about</code> <span class="text-muted-foreground">- About me</span></li>
-    <li><code class="text-foreground">contact</code> <span class="text-muted-foreground">- Contact information</span></li>
-    <li><code class="text-foreground">cv</code> <span class="text-muted-foreground">- Open CV/resume</span></li>
-    <li><code class="text-foreground">ask &lt;question&gt;</code> <span class="text-muted-foreground">- Ask about my work</span></li>
+    <li><code class="text-foreground">ls</code> <span class="text-muted-foreground">- List files</span></li>
+    <li><code class="text-foreground">cd &lt;path&gt;</code> <span class="text-muted-foreground">- Change directory</span></li>
+    <li><code class="text-foreground">cat &lt;file&gt;</code> <span class="text-muted-foreground">- Print a file</span></li>
+    <li><code class="text-foreground">pwd</code> <span class="text-muted-foreground">- Show current directory</span></li>
+    <li><code class="text-foreground">whoami</code> <span class="text-muted-foreground">- Show current user</span></li>
     <li><code class="text-foreground">clear</code> <span class="text-muted-foreground">- Clear terminal</span></li>
     <li><code class="text-foreground">exit</code> <span class="text-muted-foreground">- Exit terminal mode</span></li>
   </ul>
 </div>`
   })
 });
-commands.set("home", {
-  name: "home",
-  description: "Go to home page",
-  execute: () => ({
-    html: "<p>Navigating to home...</p>",
-    navigate: "/"
-  })
-});
-commands.set("projects", {
-  name: "projects",
-  description: "List all projects",
-  execute: () => {
-    const projects = getAllProjects();
-    const items = projects.map(
-      (p) => `<li class="py-2 border-b border-border last:border-0">
-  <a href="/projects/${p.slug}" class="text-foreground hover:underline font-medium">${escapeHtml(p.title)}</a>
-  <p class="text-muted-foreground text-sm mt-1">${escapeHtml(p.summary)}</p>
-  <div class="flex gap-2 mt-1">${p.tags.map((t) => `<span class="text-xs text-muted-foreground">${escapeHtml(t)}</span>`).join("")}</div>
-</li>`
-    ).join("");
-    return {
-      html: `<div><p class="text-muted-foreground mb-3">${projects.length} projects:</p><ul class="space-y-1">${items}</ul></div>`
-    };
-  }
-});
-commands.set("project", {
-  name: "project",
-  description: "Show project details",
-  usage: "project <slug>",
+commands.set("ls", {
+  name: "ls",
+  description: "List files",
   execute: (args) => {
-    const slug = args[0];
-    if (!slug) {
+    const target = args[0] ?? ".";
+    const path = resolvePath(target);
+    const entries = listDir(path);
+    if (!entries) {
+      if (isFile(path)) {
+        return { html: renderPre(basename(path)) };
+      }
       return {
-        html: '<p class="text-red-400">Usage: project &lt;slug&gt;</p><p class="text-muted-foreground mt-1">Run <code>projects</code> to see available slugs.</p>'
+        html: `<p class="text-red-400">ls: cannot access '${escapeHtml(target)}': No such file or directory</p>`
       };
     }
-    const project = getProject(slug);
-    if (!project) {
-      return {
-        html: `<p class="text-red-400">Project "${escapeHtml(slug)}" not found.</p><p class="text-muted-foreground mt-1">Run <code>projects</code> to see available slugs.</p>`
-      };
-    }
-    return {
-      html: `<article class="space-y-4">
-  <header>
-    <h2 class="text-lg font-semibold">${escapeHtml(project.title)}</h2>
-    <p class="text-muted-foreground">${escapeHtml(project.summary)}</p>
-  </header>
-  <section>
-    <h3 class="font-medium text-muted-foreground">Problem</h3>
-    <p>${escapeHtml(project.problem)}</p>
-  </section>
-  <section>
-    <h3 class="font-medium text-muted-foreground">Approach</h3>
-    <p>${escapeHtml(project.approach)}</p>
-  </section>
-  <section>
-    <h3 class="font-medium text-muted-foreground">Impact</h3>
-    <p>${escapeHtml(project.impact)}</p>
-  </section>
-  <section>
-    <h3 class="font-medium text-muted-foreground">Tech</h3>
-    <p>${project.tech.map((t) => escapeHtml(t)).join(", ")}</p>
-  </section>
-  <p class="pt-2"><a href="/projects/${project.slug}" class="text-foreground underline">View full page →</a></p>
-</article>`
-    };
+    const output = formatLs(entries);
+    return { html: output ? renderPre(output) : "" };
   }
 });
-commands.set("blog", {
-  name: "blog",
-  description: "List blog posts",
-  execute: () => {
-    const posts = getAllPosts();
-    if (posts.length === 0) {
-      return {
-        html: '<p class="text-muted-foreground">No blog posts yet. Check back soon!</p>'
-      };
-    }
-    const items = posts.map(
-      (p) => `<li class="py-2 border-b border-border last:border-0">
-  <a href="/blog/${p.slug}" class="text-foreground hover:underline font-medium">${escapeHtml(p.title)}</a>
-  <p class="text-muted-foreground text-xs mt-1">${formatDate(p.date)}</p>
-  <p class="text-muted-foreground text-sm mt-1">${escapeHtml(p.description)}</p>
-  <div class="flex gap-2 mt-1">${p.tags.map((t) => `<span class="text-xs text-muted-foreground">#${escapeHtml(t)}</span>`).join(" ")}</div>
-</li>`
-    ).join("");
-    return {
-      html: `<div><p class="text-muted-foreground mb-3">${posts.length} posts:</p><ul class="space-y-1">${items}</ul></div>`
-    };
-  }
-});
-commands.set("post", {
-  name: "post",
-  description: "Show blog post",
-  usage: "post <slug>",
+commands.set("cd", {
+  name: "cd",
+  description: "Change directory",
+  usage: "cd <path>",
   execute: (args) => {
-    const slug = args[0];
-    if (!slug) {
+    const target = args[0] ?? HOME_PATH;
+    const path = resolvePath(target);
+    if (!isDir(path)) {
+      const reason = isFile(path) ? "Not a directory" : "No such file or directory";
       return {
-        html: '<p class="text-red-400">Usage: post &lt;slug&gt;</p><p class="text-muted-foreground mt-1">Run <code>blog</code> to see available posts.</p>'
+        html: `<p class="text-red-400">cd: ${escapeHtml(target)}: ${reason}</p>`
       };
     }
-    const post = getPostBySlug(slug);
-    if (!post) {
-      return {
-        html: `<p class="text-red-400">Post "${escapeHtml(slug)}" not found.</p><p class="text-muted-foreground mt-1">Run <code>blog</code> to see available posts.</p>`
-      };
-    }
-    return {
-      html: `<article class="space-y-4">
-  <header>
-    <h2 class="text-lg font-semibold">${escapeHtml(post.title)}</h2>
-    <p class="text-muted-foreground text-sm">${formatDate(post.date)}</p>
-  </header>
-  <p>${escapeHtml(post.description)}</p>
-  <div class="flex gap-2">${post.tags.map((t) => `<span class="text-xs text-muted-foreground">#${escapeHtml(t)}</span>`).join(" ")}</div>
-  <p class="pt-2"><a href="/blog/${post.slug}" class="text-foreground underline">Read full post →</a></p>
-</article>`
-    };
+    setCwd(path);
+    return { html: "" };
   }
 });
-commands.set("open", {
-  name: "open",
-  description: "Navigate to page",
-  usage: "open <slug>",
+commands.set("cat", {
+  name: "cat",
+  description: "Print a file",
+  usage: "cat <file>",
   execute: (args) => {
-    const slug = args[0];
-    if (!slug) {
+    const target = args[0];
+    if (!target) {
       return {
-        html: '<p class="text-red-400">Usage: open &lt;slug&gt;</p>'
+        html: '<p class="text-red-400">Usage: cat &lt;file&gt;</p>'
       };
     }
-    const project = getProject(slug);
-    if (project) {
+    const path = resolvePath(target);
+    const contents = readFile(path);
+    if (contents === null) {
+      const reason = isDir(path) ? "Is a directory" : "No such file or directory";
       return {
-        html: `<p>Opening ${escapeHtml(project.title)}...</p>`,
-        navigate: `/projects/${project.slug}`
+        html: `<p class="text-red-400">cat: ${escapeHtml(target)}: ${reason}</p>`
       };
     }
-    const post = getPostBySlug(slug);
-    if (post) {
-      return {
-        html: `<p>Opening ${escapeHtml(post.title)}...</p>`,
-        navigate: `/blog/${post.slug}`
-      };
-    }
-    return {
-      html: `<p class="text-red-400">"${escapeHtml(slug)}" not found.</p><p class="text-muted-foreground mt-1">Run <code>projects</code> or <code>blog</code> to see available items.</p>`
-    };
+    return { html: renderPre(contents) };
   }
 });
-commands.set("about", {
-  name: "about",
-  description: "About me",
-  execute: () => {
-    const timeline = about.timeline.map(
-      (t) => `<li class="flex gap-4"><span class="text-muted-foreground w-12">${escapeHtml(t.year)}</span><div><span class="font-medium">${escapeHtml(t.title)}</span><p class="text-muted-foreground text-sm">${escapeHtml(t.description)}</p></div></li>`
-    ).join("");
-    return {
-      html: `<article class="space-y-4">
-  <header>
-    <h2 class="text-lg font-semibold">${escapeHtml(about.name)}</h2>
-    <p class="text-muted-foreground">${escapeHtml(about.role)}</p>
-  </header>
-  <p>${escapeHtml(about.bio)}</p>
-  <section>
-    <h3 class="font-medium text-muted-foreground mb-2">Timeline</h3>
-    <ul class="space-y-2">${timeline}</ul>
-  </section>
-  <p class="pt-2"><a href="/about" class="text-foreground underline">View full page →</a></p>
-</article>`
-    };
-  }
+commands.set("pwd", {
+  name: "pwd",
+  description: "Show current directory",
+  execute: () => ({ html: renderPre(getCwd()) })
 });
-commands.set("contact", {
-  name: "contact",
-  description: "Contact information",
-  execute: () => ({
-    html: `<section class="space-y-2">
-  <h3 class="text-sm uppercase tracking-wide text-muted-foreground">Contact</h3>
-  <ul class="space-y-1">
-    <li><span class="text-muted-foreground">Email:</span> <a href="mailto:${about.email}" class="underline">${escapeHtml(about.email)}</a></li>
-    <li><span class="text-muted-foreground">GitHub:</span> <a href="${about.github}" target="_blank" rel="noopener" class="underline">${escapeHtml(about.github)}</a></li>
-    <li><span class="text-muted-foreground">LinkedIn:</span> <a href="${about.linkedin}" target="_blank" rel="noopener" class="underline">${escapeHtml(about.linkedin)}</a></li>
-  </ul>
-</section>`
-  })
-});
-commands.set("cv", {
-  name: "cv",
-  description: "Open CV/resume",
-  execute: () => ({
-    html: `<p>Opening CV... <a href="${about.cvUrl}" target="_blank" rel="noopener" class="underline">Click here if not redirected</a></p>`,
-    navigate: about.cvUrl
-  })
+commands.set("whoami", {
+  name: "whoami",
+  description: "Show current user",
+  execute: () => ({ html: renderPre(TERMINAL_USER) })
 });
 commands.set("clear", {
   name: "clear",
@@ -256,52 +299,26 @@ commands.set("exit", {
     navigate: "/"
   })
 });
-commands.set("ask", {
-  name: "ask",
-  description: "Ask about my work",
-  usage: "ask <question>",
-  execute: async (args) => {
-    const question = args.join(" ");
-    if (!question) {
-      return {
-        html: '<p class="text-red-400">Usage: ask &lt;question&gt;</p><p class="text-muted-foreground mt-1">Example: ask what technologies do you use?</p>'
-      };
-    }
-    try {
-      const response = await fetch("/api/ask", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ question })
-      });
-      const data = await response.json();
-      const sources = data.sources?.length > 0 ? `<div class="mt-3 pt-3 border-t border-border"><p class="text-muted-foreground text-sm">Sources:</p><ul class="mt-1">${data.sources.map((s) => `<li><a href="${s.url}" class="text-sm underline">${escapeHtml(s.title)}</a></li>`).join("")}</ul></div>` : "";
-      return {
-        html: `<div><p>${escapeHtml(data.answer)}</p>${sources}</div>`
-      };
-    } catch {
-      return {
-        html: '<p class="text-red-400">Failed to process question. Try again.</p>'
-      };
-    }
-  }
-});
 function _page($$renderer, $$props) {
   $$renderer.component(($$renderer2) => {
+    let currentCwd = getCwd();
+    const promptParts = getPromptParts(currentCwd);
     const skeletonLines = [0, 1, 2, 3, 4];
     let $$settled = true;
     let $$inner_renderer;
     function $$render_inner($$renderer3) {
-      head("1dhdpeh", $$renderer3, ($$renderer4) => {
-        $$renderer4.title(($$renderer5) => {
-          $$renderer5.push(`<title>Terminal - Portfolio</title>`);
-        });
-        $$renderer4.push(`<meta name="description" content="Interactive terminal interface to explore the portfolio."/>`);
+      SeoHead($$renderer3, {
+        title: `Terminal | ${SITE_NAME}`,
+        description: "Interactive terminal interface to explore the portfolio.",
+        canonical: "/terminal",
+        noindex: true
       });
+      $$renderer3.push(`<!----> `);
       {
         $$renderer3.push("<!--[!-->");
         {
           $$renderer3.push("<!--[-->");
-          $$renderer3.push(`<div class="h-screen flex flex-col bg-background font-mono" aria-busy="true"><header class="flex items-center justify-between px-4 py-3 border-b border-border"><div class="flex items-center gap-2"><span class="text-muted-foreground text-sm">portfolio</span> <span class="text-muted-foreground/50">~</span></div> `);
+          $$renderer3.push(`<div class="h-screen flex flex-col bg-background font-mono" aria-busy="true"><header class="flex items-center justify-between px-4 py-3 border-b border-border"><div class="flex items-center text-sm"><span class="text-emerald-400">${escape_html(promptParts.user)}@${escape_html(promptParts.host)}</span> <span class="text-muted-foreground">:</span> <span class="text-sky-400">${escape_html(promptParts.path)}</span></div> `);
           Button($$renderer3, {
             href: "/",
             variant: "ghost",
@@ -317,7 +334,7 @@ function _page($$renderer, $$props) {
             each_array[$$index];
             $$renderer3.push(`<div class="h-4 w-full bg-muted rounded motion-safe:animate-pulse"></div>`);
           }
-          $$renderer3.push(`<!--]--></div></div> <div class="border-t border-border p-4"><div class="h-10 w-full bg-muted rounded motion-safe:animate-pulse"></div></div></div>`);
+          $$renderer3.push(`<!--]--></div> <div class="h-4 w-48 bg-muted rounded motion-safe:animate-pulse"></div></div></div>`);
         }
         $$renderer3.push(`<!--]-->`);
       }

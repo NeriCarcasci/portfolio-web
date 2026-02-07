@@ -27,7 +27,7 @@ export {};
 
 declare module "$app/types" {
 	export interface AppTypes {
-		RouteId(): "/" | "/about" | "/api" | "/api/ask" | "/blog" | "/blog/[slug]" | "/projects" | "/projects/[slug]" | "/robots.txt" | "/rss.xml" | "/sitemap.xml" | "/terminal";
+		RouteId(): "/" | "/about" | "/api" | "/api/ask" | "/blog" | "/blog/[slug]" | "/contact" | "/projects" | "/projects/[slug]" | "/robots.txt" | "/rss.xml" | "/sitemap.xml" | "/terminal";
 		RouteParams(): {
 			"/blog/[slug]": { slug: string };
 			"/projects/[slug]": { slug: string }
@@ -39,6 +39,7 @@ declare module "$app/types" {
 			"/api/ask": Record<string, never>;
 			"/blog": { slug?: string };
 			"/blog/[slug]": { slug: string };
+			"/contact": Record<string, never>;
 			"/projects": { slug?: string };
 			"/projects/[slug]": { slug: string };
 			"/robots.txt": Record<string, never>;
@@ -46,8 +47,8 @@ declare module "$app/types" {
 			"/sitemap.xml": Record<string, never>;
 			"/terminal": Record<string, never>
 		};
-		Pathname(): "/" | "/about" | "/about/" | "/api" | "/api/" | "/api/ask" | "/api/ask/" | "/blog" | "/blog/" | `/blog/${string}` & {} | `/blog/${string}/` & {} | "/projects" | "/projects/" | `/projects/${string}` & {} | `/projects/${string}/` & {} | "/robots.txt" | "/robots.txt/" | "/rss.xml" | "/rss.xml/" | "/sitemap.xml" | "/sitemap.xml/" | "/terminal" | "/terminal/";
+		Pathname(): "/" | "/about" | "/about/" | "/api" | "/api/" | "/api/ask" | "/api/ask/" | "/blog" | "/blog/" | `/blog/${string}` & {} | `/blog/${string}/` & {} | "/contact" | "/contact/" | "/projects" | "/projects/" | `/projects/${string}` & {} | `/projects/${string}/` & {} | "/robots.txt" | "/robots.txt/" | "/rss.xml" | "/rss.xml/" | "/sitemap.xml" | "/sitemap.xml/" | "/terminal" | "/terminal/";
 		ResolvedPathname(): `${"" | `/${string}`}${ReturnType<AppTypes['Pathname']>}`;
-		Asset(): "/cv.pdf" | "/favicon.png" | "/favicon.svg" | "/projects/building-an-ai-planning-intelligence-platform-for-ireland_demo_59c10df13a4a.mp4" | "/projects/building-an-ai-planning-intelligence-platform-for-ireland_preview_video_59c10df13a4a.mp4" | "/projects/building-trust-in-ai_diagram_8f77a7c9ae94.webp" | "/projects/building-trust-in-ai_preview_8f77a7c9ae94.webp" | "/projects/leo_image_a1a843283215.webp" | string & {};
+		Asset(): "/about/README.md" | "/cv.pdf" | "/favicon.png" | "/favicon.svg" | "/projects/building-an-ai-planning-intelligence-platform-for-ireland_demo_59c10df13a4a.mp4" | "/projects/building-an-ai-planning-intelligence-platform-for-ireland_preview_video_59c10df13a4a.mp4" | "/projects/building-trust-in-ai_diagram_8f77a7c9ae94.webp" | "/projects/building-trust-in-ai_preview_8f77a7c9ae94.webp" | "/projects/leo_image_a1a843283215.webp" | string & {};
 	}
 }

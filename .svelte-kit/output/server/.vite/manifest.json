@@ -27,6 +27,17 @@
       "_context.js"
     ]
   },
+  "_SeoHead.js": {
+    "file": "chunks/SeoHead.js",
+    "name": "SeoHead",
+    "imports": [
+      "_index2.js",
+      "_config.js",
+      "_about.js",
+      "_context.js",
+      "_html.js"
+    ]
+  },
   "_about.js": {
     "file": "chunks/about.js",
     "name": "about"
@@ -175,12 +186,10 @@
       "_exports.js",
       "_utils.js",
       "_state.svelte.js",
-      "_button.js",
-      "_about.js",
-      "_html.js"
+      "_about.js"
     ],
     "css": [
-      "_app/immutable/assets/_layout.CxvLFuiD.css"
+      "_app/immutable/assets/_layout.DJTPAoLN.css"
     ]
   },
   "src/routes/+page.svelte": {
@@ -193,13 +202,12 @@
       "_button.js",
       "_tag.js",
       "_CardItem.js",
-      "_utils2.js",
-      "_context.js",
       "_BentoGridItem.js",
+      "_context.js",
       "_about.js",
+      "_SeoHead.js",
       "_projects.js",
-      "_posts.js",
-      "_html.js"
+      "_posts.js"
     ]
   },
   "src/routes/about/+page.svelte": {
@@ -209,8 +217,13 @@
     "isEntry": true,
     "imports": [
       "_index2.js",
+      "_SeoHead.js",
       "_about.js",
+      "_config.js",
       "_context.js"
+    ],
+    "css": [
+      "_app/immutable/assets/_page.C2tR-iZG.css"
     ]
   },
   "src/routes/api/ask/+server.ts": {
@@ -233,10 +246,10 @@
       "_index2.js",
       "_tag.js",
       "_BentoGridItem.js",
+      "_SeoHead.js",
       "_posts.js",
       "_config.js",
-      "_context.js",
-      "_html.js"
+      "_context.js"
     ]
   },
   "src/routes/blog/[slug]/+page.svelte": {
@@ -248,6 +261,7 @@
       "_index2.js",
       "_tag.js",
       "_config.js",
+      "_about.js",
       "_context.js",
       "_html.js",
       "_posts.js"
@@ -275,7 +289,9 @@
       "_tag.js",
       "_CardItem.js",
       "_context.js",
-      "_projects.js"
+      "_SeoHead.js",
+      "_projects.js",
+      "_config.js"
     ]
   },
   "src/routes/projects/[slug]/+page.svelte": {
@@ -287,7 +303,13 @@
       "_index2.js",
       "_button.js",
       "_tag.js",
-      "_context.js"
+      "_SeoHead.js",
+      "_config.js",
+      "_context.js",
+      "_html.js"
+    ],
+    "css": [
+      "_app/immutable/assets/_page.Da3eftqA.css"
     ]
   },
   "src/routes/projects/[slug]/+page.ts": {
@@ -339,11 +361,14 @@
       "_index2.js",
       "_exports.js",
       "_utils.js",
+      "_context.js",
       "_state.svelte.js",
       "_button.js",
       "_projects.js",
       "_about.js",
-      "_posts.js"
+      "_posts.js",
+      "_SeoHead.js",
+      "_config.js"
     ]
   }
 }

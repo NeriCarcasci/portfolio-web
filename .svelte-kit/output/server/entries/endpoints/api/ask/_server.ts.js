@@ -13,9 +13,7 @@ function search(query) {
     const content = [
       project.title,
       project.summary,
-      project.problem,
-      project.approach,
-      project.impact,
+      project.text,
       ...project.tags,
       ...project.tech
     ].join(" ").toLowerCase();

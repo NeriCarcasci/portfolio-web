@@ -1,5 +1,5 @@
 const about = {
-  name: "Your Name",
+  name: "Neri Carcasci",
   role: "AI/ML Engineer",
   summary: "I build production ML systems and scalable APIs. I care about clean code, reliable infrastructure, and shipping things that work.",
   bio: `Engineer with experience across ML ops, backend development, and technical leadership.
@@ -29,9 +29,9 @@ I focus on practical solutions: code that's tested, systems that scale, and docu
     "ML Ops, Model Monitoring",
     "System Design, API Development"
   ],
-  email: "hello@example.com",
-  github: "https://github.com/yourusername",
-  linkedin: "https://linkedin.com/in/yourusername",
+  email: "nericarcasci@gmail.com",
+  github: "https://github.com/NeriCarcasci",
+  linkedin: "https://www.linkedin.com/in/neri-carcasci/",
   cvUrl: "/cv.pdf"
 };
 export {

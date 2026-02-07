@@ -1,4 +1,4 @@
-import { a7 as attributes, a2 as clsx } from "./index2.js";
+import { a1 as attributes, ac as clsx } from "./index2.js";
 import { c as cn } from "./utils2.js";
 function Button($$renderer, $$props) {
   $$renderer.component(($$renderer2) => {

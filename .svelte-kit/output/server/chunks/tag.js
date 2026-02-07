@@ -1,4 +1,4 @@
-import { a1 as attr_class, a2 as clsx } from "./index2.js";
+import { a8 as attr_class, ac as clsx } from "./index2.js";
 import { c as cn } from "./utils2.js";
 function Tag($$renderer, $$props) {
   $$renderer.component(($$renderer2) => {

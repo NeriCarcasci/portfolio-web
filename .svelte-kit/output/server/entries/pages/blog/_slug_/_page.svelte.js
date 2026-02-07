@@ -1,14 +1,15 @@
-import { a4 as head, $ as attr, a5 as stringify, _ as ensure_array_like } from "../../../../chunks/index2.js";
+import { ab as head, a9 as attr, _ as stringify, a2 as ensure_array_like } from "../../../../chunks/index2.js";
 import "clsx";
 import { T as Tag } from "../../../../chunks/tag.js";
-import { B as BASE_URL, S as SITE_NAME, a as SITE_LOCALE } from "../../../../chunks/config.js";
+import { B as BASE_URL, S as SITE_NAME, O as ORG_NAME, D as DEFAULT_OG_IMAGE, a as SITE_LOCALE, b as SITE_LOGO } from "../../../../chunks/config.js";
+import { a as about } from "../../../../chunks/about.js";
 import { e as escape_html } from "../../../../chunks/context.js";
 import { h as html } from "../../../../chunks/html.js";
 import { c as getAdjacentPosts } from "../../../../chunks/posts.js";
 const people = [
   {
     "id": "author",
-    "name": "Your Name",
+    "name": "Neri Carcasci",
     "role": "AI/ML Engineer",
     "url": "https://yourdomain.com/about"
   }
@@ -20,16 +21,71 @@ function BlogSeoHead($$renderer, $$props) {
   $$renderer.component(($$renderer2) => {
     let { post } = $$props;
     const canonicalUrl = `${BASE_URL}/blog/${post.slug}`;
-    const imageUrl = post.coverUrl ? post.coverUrl.startsWith("/") ? `${BASE_URL}${post.coverUrl}` : post.coverUrl : void 0;
+    const imageUrl = () => {
+      const raw = post.coverUrl || DEFAULT_OG_IMAGE;
+      if (!raw) return void 0;
+      return raw.startsWith("/") ? `${BASE_URL}${raw}` : raw;
+    };
     const hasKnownDimensions = post.coverUrl?.startsWith("/") && post.coverWidth && post.coverHeight;
     const publishedTime = new Date(post.date).toISOString();
     const modifiedTime = post.modified ? new Date(post.modified).toISOString() : publishedTime;
+    const twitterCard = imageUrl ? "summary_large_image" : "summary";
     const authors = post.people.map((id) => getPersonById(id)).filter((p) => p !== void 0);
     const authorName = authors[0]?.name || SITE_NAME;
     const authorUrl = authors[0]?.url || BASE_URL;
+    const schemaLocale = SITE_LOCALE.replace("_", "-");
+    const personNode = {
+      "@type": "Person",
+      "@id": `${BASE_URL}#person`,
+      name: about.name,
+      url: BASE_URL,
+      jobTitle: about.role,
+      sameAs: [about.github, about.linkedin].filter(Boolean),
+      ...{}
+    };
+    const websiteNode = {
+      "@type": "WebSite",
+      "@id": `${BASE_URL}#website`,
+      url: BASE_URL,
+      name: SITE_NAME,
+      inLanguage: schemaLocale,
+      description: about.summary,
+      publisher: { "@id": `${BASE_URL}#organization` }
+    };
+    const organizationNode = {
+      "@type": "Organization",
+      "@id": `${BASE_URL}#organization`,
+      name: ORG_NAME,
+      url: BASE_URL,
+      sameAs: [about.github, about.linkedin].filter(Boolean),
+      ...{}
+    };
+    const webPageNode = {
+      "@type": "WebPage",
+      "@id": canonicalUrl,
+      url: canonicalUrl,
+      name: `${post.title} | ${SITE_NAME}`,
+      description: post.description,
+      isPartOf: { "@id": `${BASE_URL}#website` },
+      about: { "@id": `${BASE_URL}#person` }
+    };
+    const publisherNode = () => {
+      {
+        return {
+          "@type": "Organization",
+          name: ORG_NAME,
+          url: BASE_URL,
+          ...SITE_LOGO
+        };
+      }
+    };
     const jsonLd = {
       "@context": "https://schema.org",
       "@graph": [
+        websiteNode,
+        webPageNode,
+        personNode,
+        ...organizationNode ? [organizationNode] : [],
         {
           "@type": "BlogPosting",
           "@id": `${canonicalUrl}#article`,
@@ -39,7 +95,7 @@ function BlogSeoHead($$renderer, $$props) {
           dateModified: modifiedTime,
           wordCount: post.wordCount,
           author: { "@type": "Person", name: authorName, url: authorUrl },
-          publisher: { "@type": "Organization", name: SITE_NAME, url: BASE_URL },
+          publisher: publisherNode,
           mainEntityOfPage: { "@type": "WebPage", "@id": canonicalUrl },
           ...imageUrl && hasKnownDimensions && {
             image: {
@@ -107,11 +163,15 @@ function BlogSeoHead($$renderer, $$props) {
         let author = each_array_1[$$index_1];
         $$renderer3.push(`<meta property="article:author"${attr("content", author.url || author.name)}/>`);
       }
-      $$renderer3.push(`<!--]--> <meta name="twitter:card" content="summary_large_image"/> <meta name="twitter:url"${attr("content", canonicalUrl)}/> <meta name="twitter:title"${attr("content", post.title)}/> <meta name="twitter:description"${attr("content", post.description)}/> `);
+      $$renderer3.push(`<!--]--> <meta name="twitter:card"${attr("content", twitterCard)}/> <meta name="twitter:url"${attr("content", canonicalUrl)}/> <meta name="twitter:title"${attr("content", post.title)}/> <meta name="twitter:description"${attr("content", post.description)}/> `);
       if (imageUrl) {
         $$renderer3.push("<!--[-->");
         $$renderer3.push(`<meta name="twitter:image"${attr("content", imageUrl)}/>`);
       } else {
+        $$renderer3.push("<!--[!-->");
+      }
+      $$renderer3.push(`<!--]--> `);
+      {
         $$renderer3.push("<!--[!-->");
       }
       $$renderer3.push(`<!--]--> ${html(`<script type="application/ld+json">${JSON.stringify(jsonLd)}<\/script>`)}`);
@@ -128,7 +188,7 @@ function _page($$renderer, $$props) {
       return new Date(dateStr).toLocaleDateString("en-US", { year: "numeric", month: "long", day: "numeric" });
     }
     BlogSeoHead($$renderer2, { post });
-    $$renderer2.push(`<!----> <article class="container-main"><header class="mb-12"><a href="/blog" class="text-muted-foreground hover:text-foreground text-sm mb-4 inline-block">← Back to Blog</a> <div class="flex flex-wrap gap-2 mt-4"><!--[-->`);
+    $$renderer2.push(`<!----> <article class="container-main code-embedded"><header class="mb-12"><a href="/blog" class="text-muted-foreground hover:text-foreground text-sm mb-4 inline-block">← Back to Blog</a> <div class="flex flex-wrap gap-2 mt-4"><!--[-->`);
     const each_array = ensure_array_like(post.tags);
     for (let $$index = 0, $$length = each_array.length; $$index < $$length; $$index++) {
       let tag = each_array[$$index];

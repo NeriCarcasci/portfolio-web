@@ -1,4 +1,4 @@
-import { a1 as attr_class, a2 as clsx, a6 as slot, a3 as bind_props, $ as attr } from "./index2.js";
+import { a8 as attr_class, ac as clsx, a4 as slot, a5 as bind_props, a9 as attr } from "./index2.js";
 import { c as cn } from "./utils2.js";
 import { f as fallback, e as escape_html } from "./context.js";
 function BentoGrid($$renderer, $$props) {

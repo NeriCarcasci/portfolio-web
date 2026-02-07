@@ -1,1 +1,0 @@
-import{D as u,E as o,F as _,h as t,C as g,v as i,G as l,x as d,q as p,y as v}from"./DtJa-QzH.js";function m(n,r){let s=null,y=t;var a;if(t){s=p;for(var e=v(document.head);e!==null&&(e.nodeType!==g||e.data!==n);)e=i(e);if(e===null)l(!1);else{var f=i(e);e.remove(),d(f)}}t||(a=document.head.appendChild(u()));try{o(()=>r(a),_)}finally{y&&(l(!0),d(s))}}export{m as h};
