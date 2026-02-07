@@ -50,6 +50,90 @@
     }
   ];
 
+  // Timeline experiences - chronological order
+  const timeline = [
+    {
+      year: '2019',
+      role: 'Co-Founder',
+      company: 'SnapStudy',
+      duration: '~1 year',
+      description: 'Developed an AI-powered EdTech mobile application, successfully launching it on both the App Store and Google Play. Played a key role in the platform\'s growth before transitioning out after the company\'s acquisition.',
+      tags: ['Startups', 'Mobile', 'AI/ML', 'EdTech']
+    },
+    {
+      year: '2021–2025',
+      role: 'CTO & Co-Founder',
+      company: 'Frensei',
+      duration: '4 years',
+      description: 'Led product design, development, and go-to-market for an AI planning intelligence platform recognized with multiple national and international awards (LaunchBox, New Frontiers, ISEF). Secured $50k+ in funding and $500k+ in signed pilots. Built a production system used by planning professionals across Ireland and beyond, with enterprise pilots across multiple continents.',
+      tags: ['Enterprise', 'Leadership', 'AI/ML', 'Systems Architecture', 'Go-to-Market'],
+      highlight: true
+    },
+    {
+      year: '2022–2026',
+      role: 'BSc (Hons) Computing with ML & AI',
+      company: 'TU Dublin',
+      duration: 'Sept 2022 – Aug 2026 (in progress)',
+      description: 'Pursuing specialized degree in machine learning and artificial intelligence. Graduate thesis focuses on explainable Graph Neural Networks for financial crime detection, evaluating multiple explainability methods (SHAP, LIME, GNNExplainer, Counterfactual-GNN) on real-world cryptocurrency transaction datasets.',
+      tags: ['Education', 'GNNs', 'Explainability', 'Research'],
+      gpa: '3.7'
+    },
+    {
+      year: '2023',
+      role: 'Cybersecurity Consultant',
+      company: 'Ernst & Young',
+      duration: 'May–Aug 2023 (Internship)',
+      description: 'Gained practical experience in penetration testing, cyber campaign management, and client engagement. Contributed to innovation initiatives including the EY Sustainability Challenge and Open Science AI/ML competitions.',
+      tags: ['Security', 'Consulting', 'Penetration Testing']
+    },
+    {
+      year: '2023–2024',
+      role: 'Applied Maths & Computer Science Teacher',
+      company: 'Educating Éire',
+      duration: 'May 2023 – June 2024 (1 year)',
+      description: 'Taught senior cycle students in Applied Maths and Computer Science. Built on 2,000+ hours of freelance tutoring experience across secondary, undergraduate, and professional levels, helping learners develop systems thinking and problem decomposition skills.',
+      tags: ['Education', 'Mentoring', 'Teaching'],
+      note: 'Continued concurrent with Frensei'
+    },
+    {
+      year: '2024–2025',
+      role: 'AI & ML Engineer',
+      company: 'Red Hat Trusted AI',
+      duration: 'Jan–Aug 2025 (Internship, 9 months)',
+      description: 'Spearheaded Python rewrite and API exposure of core NLP evaluation metrics (BLEU, ROUGE, Levenshtein). Architected robust test infrastructure with dependency injection for service endpoints. Redesigned and reimplemented drift detection metrics including Jensen-Shannon divergence. Led educational outreach with robotics and Python workshops.',
+      tags: ['Enterprise ML', 'Python', 'API Design', 'Testing', 'Open Source'],
+      highlight: true
+    }
+  ];
+
+  // Achievements - notable recognitions
+  const achievements = [
+    {
+      year: '2024',
+      title: 'ISEF Finalist & Podium',
+      description: '2-time ISEF finalist with podium placement in 2024, winning $5,000 in recognition of outstanding achievement',
+      org: 'ISEF'
+    },
+    {
+      year: '2023',
+      title: 'Huawei Seeds for the Future',
+      description: 'Selected for Huawei\'s global leadership development programme',
+      org: 'Huawei'
+    },
+    {
+      year: '2022',
+      title: 'Venture Lab GrowthHub Pre-Accelerator',
+      description: 'Accepted into pre-accelerator programme for early-stage founders',
+      org: 'Venture Lab'
+    },
+    {
+      year: '2021–2025',
+      title: 'Enterprise Ireland New Frontiers',
+      description: 'Phase 2 backing and funding for Frensei through Enterprise Ireland\'s New Frontiers programme',
+      org: 'Enterprise Ireland'
+    }
+  ];
+
   // Logos configuration
   const recognitions = [
     { name: 'Red Hat', img: '/about/redhat.svg', alt: 'Red Hat' },
@@ -103,91 +187,93 @@
 
     <!-- Experience & Trajectory -->
     <section class="space-y-10">
-      <h2 class="text-3xl font-semibold text-white">Experience & Trajectory</h2>
+      <h2 class="text-3xl font-semibold text-white">Timeline & Experience</h2>
+      
+      <div class="space-y-6">
+        {#each timeline as exp, index}
+          <div class="relative pl-6 border-l-2 {exp.highlight ? 'border-emerald-500/50' : 'border-neutral-700'} hover:border-emerald-500/30 transition-colors">
+            <!-- Year badge -->
+            <div class="absolute -left-4 top-0 w-6 h-6 rounded-full {exp.highlight ? 'bg-emerald-500/30 border-2 border-emerald-400' : 'bg-neutral-700 border-2 border-neutral-600'} flex items-center justify-center">
+              <div class="w-2 h-2 rounded-full {exp.highlight ? 'bg-emerald-400' : 'bg-neutral-400'}"></div>
+            </div>
 
-      <!-- Startup & Entrepreneurship -->
-      <div class="space-y-4">
-        <h3 class="text-xl font-semibold text-emerald-400">Startup & Entrepreneurship</h3>
-        <div class="embedded-panel space-y-4">
-          <p class="leading-relaxed text-neutral-200">
-            As co-founder and technical lead of an <strong>AI-enhanced planning intelligence platform</strong>, I designed and 
-            built a production system now used by planning professionals across Ireland. The work focused on building 
-            traceable, explainable AI infrastructure for regulated decision-making—combining document ingestion pipelines, 
-            retrieval-augmented reasoning, and workflow-aware tooling into a system where every output can be audited 
-            and defended.
-          </p>
-          <p class="leading-relaxed text-neutral-200">
-            The core principle: if the reasoning cannot be traced and explained, the output cannot be used. This shaped 
-            every architectural decision, from citation enforcement to strict separation between AI assistance and human 
-            decision authority.
-          </p>
-          <p class="leading-relaxed text-neutral-200">
-            The platform is live in production, operating commercially with enterprise pilots, and backed by 
-            <strong>Enterprise Ireland's New Frontiers</strong> programme. This taught me how to balance technical 
-            rigor with commercial realism—building systems that work under actual use, not just in ideal conditions.
-          </p>
-        </div>
-      </div>
+            <div class="embedded-panel space-y-3">
+              <div class="flex flex-col md:flex-row md:items-baseline md:justify-between gap-2">
+                <div>
+                  <h3 class="text-xl font-semibold text-white">{exp.role}</h3>
+                  <p class="text-emerald-400">{exp.company}</p>
+                </div>
+                <div class="text-sm text-neutral-400 whitespace-nowrap">
+                  {exp.year} · {exp.duration}
+                </div>
+              </div>
 
-      <!-- Enterprise & Production Engineering -->
-      <div class="space-y-4">
-        <h3 class="text-xl font-semibold text-emerald-400">Enterprise & Production Engineering</h3>
-        <div class="embedded-panel space-y-4">
-          <p class="leading-relaxed text-neutral-200">
-            At <strong>Red Hat's Trusted AI team</strong>, I rebuilt the internal metrics platform for ML model governance, 
-            added drift detection capabilities, and exposed new APIs for cross-team integration. The work required navigating 
-            existing production infrastructure, understanding how teams actually use ML monitoring tools, and delivering 
-            improvements without breaking existing workflows.
-          </p>
-          <p class="leading-relaxed text-neutral-200">
-            This experience reinforced the importance of backwards compatibility, incremental improvement, and building for 
-            maintainability in large-scale engineering environments. Production ML is software engineering with extra 
-            uncertainty—it requires monitoring, versioning, testing, and realistic expectations about model behavior over time.
-          </p>
-          <p class="leading-relaxed text-neutral-200">
-            Earlier work at <strong>EY</strong> involved backend development, API design, database optimization, and CI/CD 
-            pipeline construction—core engineering that matters regardless of whether AI is involved.
-          </p>
-        </div>
-      </div>
+              {#if exp.gpa}
+                <p class="text-sm text-emerald-400 font-medium">GPA: {exp.gpa}</p>
+              {/if}
 
-      <!-- Teaching & Mentoring -->
-      <div class="space-y-4">
-        <h3 class="text-xl font-semibold text-emerald-400">Teaching & Mentoring</h3>
-        <div class="embedded-panel space-y-4">
-          <p class="leading-relaxed text-neutral-200">
-            I've taught technical workshops, mentored students, and tutored in computer science fundamentals. Through 
-            <strong>Educating Éire</strong> and independent tutoring, I've worked with learners at different levels—from 
-            secondary school through university—helping them understand not just syntax, but systems thinking and problem 
-            decomposition.
-          </p>
-          <p class="leading-relaxed text-neutral-200">
-            Teaching clarifies thinking. Explaining how something works forces you to understand it more deeply. This applies 
-            to code reviews, documentation, and technical communication just as much as formal instruction.
-          </p>
-        </div>
+              <p class="text-base leading-relaxed text-neutral-200">
+                {exp.description}
+              </p>
+
+              {#if exp.note}
+                <p class="text-xs text-neutral-400 italic">{exp.note}</p>
+              {/if}
+
+              {#if exp.tags && exp.tags.length > 0}
+                <div class="flex flex-wrap gap-2 pt-2">
+                  {#each exp.tags as tag}
+                    <span class="px-2 py-1 text-xs rounded border border-neutral-600 text-neutral-300 bg-neutral-900/50">
+                      {tag}
+                    </span>
+                  {/each}
+                </div>
+              {/if}
+            </div>
+          </div>
+        {/each}
       </div>
     </section>
 
-    <!-- Education & Foundations -->
+    <!-- Achievements Section -->
     <section class="space-y-6">
-      <h2 class="text-3xl font-semibold text-white">Education & Foundations</h2>
+      <h2 class="text-3xl font-semibold text-white">Recognitions & Awards</h2>
+      
+      <div class="grid md:grid-cols-2 gap-4">
+        {#each achievements as achievement}
+          <div class="embedded-panel space-y-2">
+            <div class="flex items-start justify-between gap-4">
+              <div>
+                <h4 class="font-semibold text-emerald-400">{achievement.title}</h4>
+                <p class="text-sm text-neutral-400">{achievement.org}</p>
+              </div>
+              <span class="text-sm font-mono text-neutral-500 whitespace-nowrap">{achievement.year}</span>
+            </div>
+            <p class="text-sm leading-relaxed text-neutral-200">{achievement.description}</p>
+          </div>
+        {/each}
+      </div>
+    </section>
+
+    <!-- Key Learnings -->
+    <section class="space-y-6">
+      <h2 class="text-3xl font-semibold text-white">Key Learnings from the Journey</h2>
       <div class="embedded-panel space-y-4">
         <p class="leading-relaxed text-neutral-200">
-          I'm completing a <strong>BSc (Hons) in Computing with Machine Learning & AI at TU Dublin</strong>, where my 
-          graduate thesis focuses on explainable Graph Neural Networks for financial crime detection. The work involves 
-          implementing and evaluating multiple explainability methods (SHAP, LIME, GNNExplainer, Counterfactual-GNN) 
-          on the Elliptic2 dataset—a real-world benchmark for anti-money laundering detection in cryptocurrency networks.
+          Building production systems taught me that engineering pragmatism matters. Frensei forced me to balance 
+          technical rigor with commercial reality—systems must be reliable, testable, and maintainable, but they also 
+          need to ship and adapt to real user feedback.
         </p>
         <p class="leading-relaxed text-neutral-200">
-          The research addresses a practical problem: GNNs can model complex relational patterns in financial transactions, 
-          but they operate as black boxes. For regulated financial institutions, this lack of transparency is a barrier to 
-          adoption. Building explainability into these models means balancing performance with interpretability—making 
-          systems that are both effective and trustworthy.
+          At Red Hat, I learned that scale changes everything. What works in a startup doesn't necessarily work at 
+          enterprise scale. Backwards compatibility, incremental improvement, and institutional knowledge become 
+          critical. Production ML is software engineering with extra uncertainty—monitoring, versioning, and realistic 
+          expectations about model behavior compound the engineering challenges.
         </p>
         <p class="leading-relaxed text-neutral-200">
-          My academic work emphasizes applied learning—understanding not just how algorithms work, but when and why to 
-          use them, what their failure modes are, and how they behave in production contexts.
+          Research (through my thesis on explainable GNNs) taught me that the most interesting problems sit at the 
+          intersection of rigor and pragmatism. Explainability in AI isn't an academic exercise—it's a fundamental 
+          requirement for regulated systems where decisions must be defensible.
         </p>
       </div>
     </section>
