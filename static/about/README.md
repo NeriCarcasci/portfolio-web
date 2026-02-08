@@ -1,52 +1,59 @@
 # About Page Logo Assets
 
-This directory contains logo assets used on the /about page.
+This directory contains logo assets for the about page recognitions section.
 
-## Required Logo Files
+## Current Assets
 
-The following logo files need to be added to this directory:
+### Existing Files
+- `redhat.svg` - Red Hat logo (correctly named)
+- `tudublin.jpg` - TU Dublin logo (correctly named)
+- `newfrontiers.jpg` - Enterprise Ireland New Frontiers logo (correctly named)
+- `isef.png` - ISEF logo (correctly named)
+- `eireplan.png` - Eireplan company logo
+- `ey.webp` - Ernst & Young logo
+- `frensei.jpg` - Frensei company logo
+- `udacity.png` - Udacity certification logo
 
-### 1. Red Hat Logo
-- **Filename:** `redhat.svg`
-- **Format:** SVG (vector, recommended) or transparent PNG
-- **Source:** [Red Hat Brand Portal](https://www.redhat.com/en/about/brand/standards/logo) or official Red Hat media kit
-- **Color:** Preferably white/monochrome version for dark background
-- **Usage:** Represents work with Red Hat's Trusted AI team
+### Required Assets (To Be Added)
+The following logo files are referenced in the about page but need to be added:
 
-### 2. TU Dublin Logo
-- **Filename:** `tudublin.svg`
-- **Format:** SVG or transparent PNG
-- **Source:** [TU Dublin Brand Guidelines](https://www.tudublin.ie/about/brand-guidelines/) or official university media resources
-- **Color:** White/monochrome version preferred
-- **Usage:** Represents current BSc (Hons) in Computing with ML & AI
+- `educatingeire.png` - Educating Éire company logo
 
-### 3. Enterprise Ireland / New Frontiers Logo
-- **Filename:** `enterprise-ireland.svg`
-- **Format:** SVG or transparent PNG
-- **Source:** [Enterprise Ireland Brand Centre](https://www.enterprise-ireland.com/) or New Frontiers programme materials
-- **Color:** White/monochrome version preferred
-- **Usage:** Represents New Frontiers programme support for startup work
+## Sourcing Logos
 
-### 4. ISEF Logo
-- **Filename:** `isef.svg`
-- **Format:** SVG or transparent PNG
-- **Source:** [Intel ISEF official website](https://www.societyforscience.org/isef/) or official competition materials
-- **Color:** White/monochrome version preferred
-- **Usage:** Represents recognition/participation in Intel International Science and Engineering Fair
+### Brand Guidelines
+When adding logos, ensure you:
+1. Use official brand assets from the respective company's brand/press kit
+2. Prefer SVG format for scalability (use PNG/JPG only if SVG unavailable)
+3. Use transparent backgrounds where possible
+4. Maintain adequate padding/clearspace as per brand guidelines
+5. Do not modify colors or proportions
 
-## Design Guidelines
+### Recommended Sources
+- **Red Hat**: https://www.redhat.com/en/about/brand/standards/logo
+- **TU Dublin**: University brand portal
+- **Enterprise Ireland**: https://www.enterprise-ireland.com
+- **ISEF**: https://www.societyforscience.org/isef/
+- **Eireplan**: Company brand assets
+- **Educating Éire**: Company brand assets
+- **EY**: https://www.ey.com/en_gl/news/media-resources
+- **Frensei**: Company brand assets
+- **Udacity**: https://www.udacity.com/press
 
-All logos should follow these specifications:
+## Technical Specifications
 
-- **Format:** SVG preferred for scalability; PNG (transparent background) acceptable
-- **Color scheme:** White/light monochrome versions work best against the dark site background
-- **Size:** Logos will be automatically scaled to max-height: 4rem (64px) and max-width: 100%
-- **Aspect ratio:** Original aspect ratios will be preserved
-- **Filters:** Logos are displayed with:
-  - Default: 40% opacity + grayscale
-  - On hover: 90% opacity + color restored + emerald accent
+### Display Specs
+- Timeline logos: 160×160px container (md screens), 128×128px (mobile)
+- Achievement logos: 80×80px container
+- Education logo: 160×160px container (md screens), 128×128px (mobile)
+- All logos use `object-contain` to preserve aspect ratio
+- White background with shadow-lg styling
 
-## Fallback
+### File Naming
+- Use lowercase
+- No spaces (use hyphens for multi-word names)
+- Prefer `.svg` extension (fallback to `.png` or `.jpg`)
+- Match the filename exactly as referenced in the code
 
 If an official logo is unavailable or restricted by brand guidelines:
 - Use text-based alternatives

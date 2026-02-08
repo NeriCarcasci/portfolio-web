@@ -1,5 +1,7 @@
 <script lang="ts">
   import SeoHead from '$components/SeoHead.svelte';
+  import Timeline from '$lib/components/Timeline.svelte';
+  import TimelineItem from '$lib/components/TimelineItem.svelte';
   import { about } from '$content/about';
   import { BASE_URL } from '$lib/config';
 
@@ -50,58 +52,50 @@
     }
   ];
 
-  // Timeline experiences - chronological order
+  // Timeline experiences - reverse chronological (newest first)
   const timeline = [
     {
-      year: '2019',
+      date: 'November 2025 – Present',
       role: 'Co-Founder',
-      company: 'SnapStudy',
-      duration: '~1 year',
-      description: 'Developed an AI-powered EdTech mobile application, successfully launching it on both the App Store and Google Play. Played a key role in the platform\'s growth before transitioning out after the company\'s acquisition.',
-      tags: ['Startups', 'Mobile', 'AI/ML', 'EdTech']
-    },
-    {
-      year: '2021–2025',
-      role: 'CTO & Co-Founder',
-      company: 'Frensei',
-      duration: '4 years',
-      description: 'Led product design, development, and go-to-market for an AI planning intelligence platform recognized with multiple national and international awards (LaunchBox, New Frontiers, ISEF). Secured $50k+ in funding and $500k+ in signed pilots. Built a production system used by planning professionals across Ireland and beyond, with enterprise pilots across multiple continents.',
-      tags: ['Enterprise', 'Leadership', 'AI/ML', 'Systems Architecture', 'Go-to-Market'],
+      company: 'Eireplan',
+      description: 'Building next-generation planning intelligence platform for Ireland.',
+      tags: ['Startups', 'AI/ML', 'GovTech'],
+      logo: '/about/eireplan.png',
       highlight: true
     },
     {
-      year: '2022–2026',
-      role: 'BSc (Hons) Computing with ML & AI',
-      company: 'TU Dublin',
-      duration: 'Sept 2022 – Aug 2026 (in progress)',
-      description: 'Pursuing specialized degree in machine learning and artificial intelligence. Graduate thesis focuses on explainable Graph Neural Networks for financial crime detection, evaluating multiple explainability methods (SHAP, LIME, GNNExplainer, Counterfactual-GNN) on real-world cryptocurrency transaction datasets.',
-      tags: ['Education', 'GNNs', 'Explainability', 'Research'],
-      gpa: '3.7'
+      date: 'January 2025 – August 2025',
+      role: 'AI & ML Engineer',
+      company: 'Red Hat Trusted AI',
+      description: 'Spearheaded Python rewrite and API exposure of core NLP evaluation metrics (BLEU, ROUGE, Levenshtein). Architected robust test infrastructure with dependency injection for service endpoints. Redesigned and reimplemented drift detection metrics including Jensen-Shannon divergence. Led educational outreach with robotics and Python workshops.',
+      tags: ['Enterprise ML', 'Python', 'API Design', 'Testing', 'Open Source'],
+      logo: '/about/redhat.svg',
+      highlight: true
     },
     {
-      year: '2023',
-      role: 'Cybersecurity Consultant',
-      company: 'Ernst & Young',
-      duration: 'May–Aug 2023 (Internship)',
-      description: 'Gained practical experience in penetration testing, cyber campaign management, and client engagement. Contributed to innovation initiatives including the EY Sustainability Challenge and Open Science AI/ML competitions.',
-      tags: ['Security', 'Consulting', 'Penetration Testing']
-    },
-    {
-      year: '2023–2024',
+      date: 'May 2023 – June 2024',
       role: 'Applied Maths & Computer Science Teacher',
       company: 'Educating Éire',
-      duration: 'May 2023 – June 2024 (1 year)',
       description: 'Taught senior cycle students in Applied Maths and Computer Science. Built on 2,000+ hours of freelance tutoring experience across secondary, undergraduate, and professional levels, helping learners develop systems thinking and problem decomposition skills.',
       tags: ['Education', 'Mentoring', 'Teaching'],
+      logo: '/about/educatingeire.png',
       note: 'Continued concurrent with Frensei'
     },
     {
-      year: '2024–2025',
-      role: 'AI & ML Engineer',
-      company: 'Red Hat Trusted AI',
-      duration: 'Jan–Aug 2025 (Internship, 9 months)',
-      description: 'Spearheaded Python rewrite and API exposure of core NLP evaluation metrics (BLEU, ROUGE, Levenshtein). Architected robust test infrastructure with dependency injection for service endpoints. Redesigned and reimplemented drift detection metrics including Jensen-Shannon divergence. Led educational outreach with robotics and Python workshops.',
-      tags: ['Enterprise ML', 'Python', 'API Design', 'Testing', 'Open Source'],
+      date: 'May 2023 – August 2023',
+      role: 'Cybersecurity Consultant',
+      company: 'Ernst & Young',
+      description: 'Gained practical experience in penetration testing, cyber campaign management, and client engagement. Contributed to innovation initiatives including the EY Sustainability Challenge and Open Science AI/ML competitions.',
+      tags: ['Security', 'Consulting', 'Penetration Testing'],
+      logo: '/about/ey.webp'
+    },
+    {
+      date: '2021 – 2025',
+      role: 'CTO & Co-Founder',
+      company: 'Frensei',
+      description: 'Led product design, development, and go-to-market for an AI planning intelligence platform recognized with multiple national and international awards (LaunchBox, New Frontiers, ISEF). Secured $50k+ in funding and $500k+ in signed pilots. Built a production system used by planning professionals across Ireland and beyond, with enterprise pilots across multiple continents.',
+      tags: ['Enterprise', 'Leadership', 'AI/ML', 'Systems Architecture', 'Go-to-Market'],
+      logo: '/about/frensei.jpg',
       highlight: true
     }
   ];
@@ -112,7 +106,8 @@
       year: '2024',
       title: 'ISEF Finalist & Podium',
       description: '2-time ISEF finalist with podium placement in 2024, winning $5,000 in recognition of outstanding achievement',
-      org: 'ISEF'
+      org: 'ISEF',
+      logo: '/about/isef.png'
     },
     {
       year: '2023',
@@ -121,26 +116,31 @@
       org: 'Huawei'
     },
     {
-      year: '2022',
-      title: 'Venture Lab GrowthHub Pre-Accelerator',
-      description: 'Accepted into pre-accelerator programme for early-stage founders',
-      org: 'Venture Lab'
+      year: '2023',
+      title: 'Udacity Deep Learning Nanodegree',
+      description: 'Completed 6-month comprehensive deep learning certification covering neural networks, CNNs, RNNs, GANs, and deployment',
+      org: 'Udacity',
+      logo: '/about/udacity.png'
     },
     {
       year: '2021–2025',
       title: 'Enterprise Ireland New Frontiers',
       description: 'Phase 2 backing and funding for Frensei through Enterprise Ireland\'s New Frontiers programme',
-      org: 'Enterprise Ireland'
+      org: 'Enterprise Ireland',
+      logo: '/about/newfrontiers.jpg'
     }
   ];
 
-  // Logos configuration
-  const recognitions = [
-    { name: 'Red Hat', img: '/about/redhat.svg', alt: 'Red Hat' },
-    { name: 'TU Dublin', img: '/about/tudublin.jpg', alt: 'TU Dublin' },
-    { name: 'Enterprise Ireland', img: '/about/newfrontiers.jpg', alt: 'Enterprise Ireland New Frontiers' },
-    { name: 'ISEF', img: '/about/isef.png', alt: 'ISEF' }
-  ];
+  // Education
+  const education = {
+    degree: 'BSc (Hons) Computing with ML & AI',
+    institution: 'TU Dublin',
+    duration: 'September 2022 – August 2026',
+    gpa: '3.7',
+    logo: '/about/tudublin.jpg',
+    description: 'Specialized degree in machine learning and artificial intelligence. Graduate thesis focuses on explainable Graph Neural Networks for financial crime detection, evaluating multiple explainability methods (SHAP, LIME, GNNExplainer, Counterfactual-GNN) on real-world cryptocurrency transaction datasets.',
+    tags: ['GNNs', 'Explainability', 'Research', 'Financial Crime Detection']
+  };
 </script>
 
 <SeoHead
@@ -185,53 +185,73 @@
       </div>
     </section>
 
-    <!-- Experience & Trajectory -->
+    <!-- Experience Timeline -->
     <section class="space-y-10">
-      <h2 class="text-3xl font-semibold text-white">Timeline & Experience</h2>
+      <h2 class="text-3xl font-semibold text-white">Experience Timeline</h2>
       
-      <div class="space-y-6">
-        {#each timeline as exp, index}
-          <div class="relative pl-6 border-l-2 {exp.highlight ? 'border-emerald-500/50' : 'border-neutral-700'} hover:border-emerald-500/30 transition-colors">
-            <!-- Year badge -->
-            <div class="absolute -left-4 top-0 w-6 h-6 rounded-full {exp.highlight ? 'bg-emerald-500/30 border-2 border-emerald-400' : 'bg-neutral-700 border-2 border-neutral-600'} flex items-center justify-center">
-              <div class="w-2 h-2 rounded-full {exp.highlight ? 'bg-emerald-400' : 'bg-neutral-400'}"></div>
-            </div>
+      <Timeline class="ms-4">
+        {#each timeline as exp}
+          <TimelineItem 
+            title="{exp.role} · {exp.company}" 
+            date={exp.date}
+            logo={exp.logo}
+            highlight={exp.highlight}
+          >
+            <p class="mb-4">
+              {exp.description}
+            </p>
+            
+            {#if exp.note}
+              <p class="text-xs text-gray-400 dark:text-gray-500 italic mb-3">{exp.note}</p>
+            {/if}
 
-            <div class="embedded-panel space-y-3">
-              <div class="flex flex-col md:flex-row md:items-baseline md:justify-between gap-2">
-                <div>
-                  <h3 class="text-xl font-semibold text-white">{exp.role}</h3>
-                  <p class="text-emerald-400">{exp.company}</p>
-                </div>
-                <div class="text-sm text-neutral-400 whitespace-nowrap">
-                  {exp.year} · {exp.duration}
-                </div>
+            {#if exp.tags && exp.tags.length > 0}
+              <div class="flex flex-wrap gap-2">
+                {#each exp.tags as tag}
+                  <span class="px-2 py-1 text-xs rounded border border-neutral-600 text-neutral-300 bg-neutral-900/50">
+                    {tag}
+                  </span>
+                {/each}
               </div>
-
-              {#if exp.gpa}
-                <p class="text-sm text-emerald-400 font-medium">GPA: {exp.gpa}</p>
-              {/if}
-
-              <p class="text-base leading-relaxed text-neutral-200">
-                {exp.description}
-              </p>
-
-              {#if exp.note}
-                <p class="text-xs text-neutral-400 italic">{exp.note}</p>
-              {/if}
-
-              {#if exp.tags && exp.tags.length > 0}
-                <div class="flex flex-wrap gap-2 pt-2">
-                  {#each exp.tags as tag}
-                    <span class="px-2 py-1 text-xs rounded border border-neutral-600 text-neutral-300 bg-neutral-900/50">
-                      {tag}
-                    </span>
-                  {/each}
-                </div>
-              {/if}
-            </div>
-          </div>
+            {/if}
+          </TimelineItem>
         {/each}
+      </Timeline>
+    </section>
+
+    <!-- Education -->
+    <section class="space-y-6">
+      <h2 class="text-3xl font-semibold text-white">Education</h2>
+      
+      <div class="embedded-panel">
+        <div class="flex flex-col md:flex-row gap-6 items-start">
+          <div class="flex-1 space-y-3">
+            <div>
+              <h3 class="text-xl font-semibold text-white">{education.degree}</h3>
+              <p class="text-emerald-400">{education.institution}</p>
+              <p class="text-sm text-neutral-400 mt-1">{education.duration}</p>
+              <p class="text-sm text-emerald-400 font-medium mt-1">GPA: {education.gpa}</p>
+            </div>
+
+            <p class="text-base leading-relaxed text-neutral-200">
+              {education.description}
+            </p>
+
+            {#if education.tags && education.tags.length > 0}
+              <div class="flex flex-wrap gap-2 pt-2">
+                {#each education.tags as tag}
+                  <span class="px-2 py-1 text-xs rounded border border-neutral-600 text-neutral-300 bg-neutral-900/50">
+                    {tag}
+                  </span>
+                {/each}
+              </div>
+            {/if}
+          </div>
+
+          <div class="flex-shrink-0 w-32 h-32 md:w-40 md:h-40 flex items-center justify-center bg-white dark:bg-gray-800 rounded-lg p-4 shadow-lg">
+            <img src={education.logo} alt="{education.institution} logo" class="w-full h-full object-contain" />
+          </div>
+        </div>
       </div>
     </section>
 
@@ -241,15 +261,25 @@
       
       <div class="grid md:grid-cols-2 gap-4">
         {#each achievements as achievement}
-          <div class="embedded-panel space-y-2">
-            <div class="flex items-start justify-between gap-4">
-              <div>
-                <h4 class="font-semibold text-emerald-400">{achievement.title}</h4>
-                <p class="text-sm text-neutral-400">{achievement.org}</p>
+          <div class="embedded-panel">
+            <div class="flex flex-col md:flex-row gap-4 items-start">
+              <div class="flex-1 space-y-2">
+                <div class="flex items-start justify-between gap-4">
+                  <div>
+                    <h4 class="font-semibold text-emerald-400">{achievement.title}</h4>
+                    <p class="text-sm text-neutral-400">{achievement.org}</p>
+                  </div>
+                  <span class="text-sm font-mono text-neutral-500 whitespace-nowrap">{achievement.year}</span>
+                </div>
+                <p class="text-sm leading-relaxed text-neutral-200">{achievement.description}</p>
               </div>
-              <span class="text-sm font-mono text-neutral-500 whitespace-nowrap">{achievement.year}</span>
+
+              {#if achievement.logo}
+                <div class="flex-shrink-0 w-20 h-20 flex items-center justify-center bg-white dark:bg-gray-800 rounded-lg p-2 shadow-lg">
+                  <img src={achievement.logo} alt="{achievement.org} logo" class="w-full h-full object-contain" />
+                </div>
+              {/if}
             </div>
-            <p class="text-sm leading-relaxed text-neutral-200">{achievement.description}</p>
           </div>
         {/each}
       </div>
@@ -286,23 +316,6 @@
           <div class="border border-white/10 bg-black/40 rounded-lg p-5 hover:border-emerald-500/30 transition-colors">
             <h4 class="font-semibold text-emerald-400 mb-2">{principle.title}</h4>
             <p class="text-sm text-neutral-300 leading-relaxed">{principle.desc}</p>
-          </div>
-        {/each}
-      </div>
-    </section>
-
-    <!-- Recognition / Trust Strip -->
-    <section class="space-y-6">
-      <h2 class="text-2xl font-semibold text-neutral-400 text-center">Worked With / Recognised By</h2>
-      <div class="grid grid-cols-2 md:grid-cols-4 gap-8 items-center justify-items-center py-8">
-        {#each recognitions as org}
-          <div class="group flex items-center justify-center h-16 w-full opacity-40 grayscale hover:opacity-90 hover:grayscale-0 transition-all duration-300">
-            <img 
-              src={org.img} 
-              alt={org.alt}
-              class="max-h-full max-w-full object-contain filter brightness-200 group-hover:brightness-100 transition-all"
-              loading="lazy"
-            />
           </div>
         {/each}
       </div>
