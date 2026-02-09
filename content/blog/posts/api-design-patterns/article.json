@@ -1,9 +1,0 @@
-{
-  "title": "API Design Patterns That Scale",
-  "description": "Patterns and practices for building APIs that remain maintainable as your system grows, from versioning to error handling.",
-  "date": "2024-10-20",
-  "tags": ["api", "backend", "architecture", "typescript"],
-  "people": ["author"],
-  "type": "article",
-  "draft": false
-}

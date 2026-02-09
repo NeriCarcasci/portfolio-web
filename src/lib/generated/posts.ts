@@ -22,68 +22,27 @@ export interface BlogPost {
 
 export const posts: BlogPost[] = [
   {
-    "slug": "building_ml_pipelines",
-    "title": "Building Production ML Pipelines",
-    "description": "Practical lessons from building ML pipelines that actually work in production, including monitoring, testing, and deployment strategies.",
-    "date": "2024-11-15",
-    "modified": "2024-12-01",
+    "slug": "eireplan_building",
+    "title": "Eireplan: Building for Clarity in Irish Planning",
+    "description": "A personal note on why I’m building Eireplan, an experiment in traceability, planning knowledge, and making complex systems easier to navigate.",
+    "date": "2025-02-09",
+    "modified": "2025-02-09",
     "tags": [
-      "machine-learning",
-      "mlops",
-      "python",
-      "production"
-    ],
-    "people": [
-      "author"
-    ],
-    "type": "article",
-    "draft": false,
-    "html": "<h1>Building Production ML Pipelines</h1>\n<p>Most ML tutorials focus on model training. The harder part is everything else: getting data in, keeping models healthy, and catching problems before users do.</p>\n<h2>The Reality of Production ML</h2>\n<p>Training a model is maybe 10% of the work. The rest is:</p>\n<ul>\n<li>Data pipelines that don&#39;t break</li>\n<li>Monitoring that catches drift</li>\n<li>Tests that actually test something</li>\n<li>Deployment that doesn&#39;t require a PhD</li>\n</ul>\n<h2>Key Principles</h2>\n<h3>1. Start with Monitoring</h3>\n<p>Before you deploy anything, know how you&#39;ll answer &quot;is it working?&quot; Define metrics upfront:</p>\n<ul>\n<li>Prediction latency (p50, p95, p99)</li>\n<li>Input data distributions</li>\n<li>Output distributions</li>\n<li>Error rates by category</li>\n</ul>\n<h3>2. Test Like You Mean It</h3>\n<p>Unit tests for ML are tricky but necessary:</p>\n<pre><code class=\"hljs language-python\"><span class=\"hljs-keyword\">def</span> <span class=\"hljs-title function_\">test_model_output_shape</span>():\n    model = load_model()\n    input_data = create_test_input()\n    output = model.predict(input_data)\n    <span class=\"hljs-keyword\">assert</span> output.shape == (<span class=\"hljs-number\">1</span>, NUM_CLASSES)\n\n<span class=\"hljs-keyword\">def</span> <span class=\"hljs-title function_\">test_model_deterministic</span>():\n    model = load_model()\n    input_data = create_test_input()\n    out1 = model.predict(input_data)\n    out2 = model.predict(input_data)\n    <span class=\"hljs-keyword\">assert</span> np.allclose(out1, out2)\n</code></pre><h3>3. Version Everything</h3>\n<p>Not just code—data, models, configs. When something breaks at 3am, you need to know what changed.</p>\n<h2>Drift Detection</h2>\n<p>Models degrade silently. Input distributions shift, user behavior changes, the world moves on. Build drift detection into your pipeline from day one.</p>\n<p>Simple approach: track statistical properties of inputs and outputs. Alert when they diverge from training distributions.</p>\n<h2>Conclusion</h2>\n<p>Production ML is software engineering with extra uncertainty. Treat it that way: test, monitor, version, and automate.</p>\n",
-    "wordCount": 242,
-    "readingTime": 2,
-    "assets": []
-  },
-  {
-    "slug": "api_design_patterns",
-    "title": "API Design Patterns That Scale",
-    "description": "Patterns and practices for building APIs that remain maintainable as your system grows, from versioning to error handling.",
-    "date": "2024-10-20",
-    "tags": [
-      "api",
-      "backend",
-      "architecture",
-      "typescript"
-    ],
-    "people": [
-      "author"
-    ],
-    "type": "article",
-    "draft": false,
-    "html": "<h1>API Design Patterns That Scale</h1>\n<p>Good API design isn&#39;t about following REST religiously. It&#39;s about building interfaces that remain usable and maintainable as requirements change.</p>\n<h2>Versioning Strategy</h2>\n<p>Pick one and stick with it:</p>\n<ul>\n<li><strong>URL versioning</strong>: <code>/v1/users</code> - Simple, explicit, easy to route</li>\n<li><strong>Header versioning</strong>: <code>Accept: application/vnd.api+json;version=1</code> - Cleaner URLs, harder to test</li>\n</ul>\n<p>I prefer URL versioning. It&#39;s obvious, cacheable, and works with every HTTP client.</p>\n<h2>Error Handling</h2>\n<p>Return structured errors. Always.</p>\n<pre><code class=\"hljs language-json\"><span class=\"hljs-punctuation\">{</span>\n  <span class=\"hljs-attr\">&quot;error&quot;</span><span class=\"hljs-punctuation\">:</span> <span class=\"hljs-punctuation\">{</span>\n    <span class=\"hljs-attr\">&quot;code&quot;</span><span class=\"hljs-punctuation\">:</span> <span class=\"hljs-string\">&quot;VALIDATION_ERROR&quot;</span><span class=\"hljs-punctuation\">,</span>\n    <span class=\"hljs-attr\">&quot;message&quot;</span><span class=\"hljs-punctuation\">:</span> <span class=\"hljs-string\">&quot;Invalid request parameters&quot;</span><span class=\"hljs-punctuation\">,</span>\n    <span class=\"hljs-attr\">&quot;details&quot;</span><span class=\"hljs-punctuation\">:</span> <span class=\"hljs-punctuation\">[</span>\n      <span class=\"hljs-punctuation\">{</span>\n        <span class=\"hljs-attr\">&quot;field&quot;</span><span class=\"hljs-punctuation\">:</span> <span class=\"hljs-string\">&quot;email&quot;</span><span class=\"hljs-punctuation\">,</span>\n        <span class=\"hljs-attr\">&quot;message&quot;</span><span class=\"hljs-punctuation\">:</span> <span class=\"hljs-string\">&quot;Must be a valid email address&quot;</span>\n      <span class=\"hljs-punctuation\">}</span>\n    <span class=\"hljs-punctuation\">]</span>\n  <span class=\"hljs-punctuation\">}</span>\n<span class=\"hljs-punctuation\">}</span>\n</code></pre><p>Use appropriate HTTP status codes:</p>\n<ul>\n<li>400: Client did something wrong</li>\n<li>401: Not authenticated</li>\n<li>403: Authenticated but not authorized</li>\n<li>404: Resource doesn&#39;t exist</li>\n<li>500: We messed up</li>\n</ul>\n<h2>Pagination</h2>\n<p>For lists, use cursor-based pagination:</p>\n<pre><code class=\"hljs language-json\"><span class=\"hljs-punctuation\">{</span>\n  <span class=\"hljs-attr\">&quot;data&quot;</span><span class=\"hljs-punctuation\">:</span> <span class=\"hljs-punctuation\">[</span>...<span class=\"hljs-punctuation\">]</span><span class=\"hljs-punctuation\">,</span>\n  <span class=\"hljs-attr\">&quot;pagination&quot;</span><span class=\"hljs-punctuation\">:</span> <span class=\"hljs-punctuation\">{</span>\n    <span class=\"hljs-attr\">&quot;next_cursor&quot;</span><span class=\"hljs-punctuation\">:</span> <span class=\"hljs-string\">&quot;eyJpZCI6MTAwfQ==&quot;</span><span class=\"hljs-punctuation\">,</span>\n    <span class=\"hljs-attr\">&quot;has_more&quot;</span><span class=\"hljs-punctuation\">:</span> <span class=\"hljs-literal\"><span class=\"hljs-keyword\">true</span></span>\n  <span class=\"hljs-punctuation\">}</span>\n<span class=\"hljs-punctuation\">}</span>\n</code></pre><p>Offset pagination breaks with concurrent writes. Cursors don&#39;t.</p>\n<h2>Rate Limiting</h2>\n<p>Always implement rate limiting. Return remaining quota in headers:</p>\n<pre><code>X-RateLimit-Limit: 100\nX-RateLimit-Remaining: 95\nX-RateLimit-Reset: 1699900800\n</code></pre><h2>Idempotency</h2>\n<p>For mutations, support idempotency keys. Clients should be able to retry safely.</p>\n<pre><code>POST /v1/payments\nIdempotency-Key: abc-123-def-456\n</code></pre><h2>Conclusion</h2>\n<p>APIs are contracts. Design them carefully, document them thoroughly, and change them reluctantly.</p>\n",
-    "wordCount": 217,
-    "readingTime": 2,
-    "assets": []
-  },
-  {
-    "slug": "startup_lessons",
-    "title": "Technical Lessons from Startup CTO Life",
-    "description": "What I learned about technology choices, team building, and shipping fast while leading engineering at an early-stage startup.",
-    "date": "2024-09-10",
-    "modified": "2024-09-15",
-    "tags": [
+      "eireplan",
+      "planning",
       "startup",
-      "leadership",
-      "engineering",
-      "career"
+      "engineering"
     ],
     "people": [
       "author"
     ],
     "type": "article",
     "draft": false,
-    "html": "<h1>Technical Lessons from Startup CTO Life</h1>\n<p>Being a startup CTO taught me more about engineering than any other role. Not because the problems were harder, but because every decision had immediate, visible consequences.</p>\n<h2>Ship First, Optimize Later</h2>\n<p>Premature optimization isn&#39;t just about code. It&#39;s about architecture, tooling, processes.</p>\n<p>We spent two weeks building a &quot;scalable&quot; message queue system before we had paying customers. We should have used a managed service and moved on.</p>\n<p><strong>Rule</strong>: If you&#39;re not embarrassed by your first version, you shipped too late.</p>\n<h2>Choose Boring Technology</h2>\n<p>Every new technology is a liability:</p>\n<ul>\n<li>Learning curve for the team</li>\n<li>Unknown failure modes</li>\n<li>Smaller talent pool</li>\n<li>Less documentation</li>\n</ul>\n<p>PostgreSQL, Redis, and proven frameworks get you far. Save the experiments for problems that actually require them.</p>\n<h2>Debt is Real</h2>\n<p>Technical debt compounds. That &quot;temporary&quot; hack becomes permanent. That missing test becomes a production incident.</p>\n<p>Budget time for cleanup. Not as a separate project—as part of every sprint.</p>\n<h2>Documentation Matters</h2>\n<p>&quot;The code is self-documenting&quot; is a lie we tell ourselves. Write:</p>\n<ul>\n<li>Architecture decisions (ADRs)</li>\n<li>API contracts</li>\n<li>Runbooks for common issues</li>\n<li>Onboarding guides</li>\n</ul>\n<p>Future you (and your team) will be grateful.</p>\n<h2>Hire for Adaptability</h2>\n<p>In a startup, roles blur. The best engineers I worked with could:</p>\n<ul>\n<li>Debug production issues at 2am</li>\n<li>Write user-facing copy</li>\n<li>Talk to customers</li>\n<li>Question product decisions</li>\n</ul>\n<p>Technical skill matters, but flexibility matters more.</p>\n<h2>Conclusion</h2>\n<p>Startups are chaos. Your job as a technical leader is to build systems—both technical and human—that can handle that chaos without breaking.</p>\n",
-    "wordCount": 266,
-    "readingTime": 2,
-    "assets": []
+    "html": "<h1>Eireplan</h1>\n<hr>\n<h2><img src=\"/blog/eireplan_building_eireplan_4579d276a745.webp\" alt=\"Eireplan\"></h2>\n<p>I’ve always been interested in systems that shape everyday life but rarely get talked about unless something goes wrong. Planning is one of those systems.</p>\n<p>It sits underneath housing, infrastructure, climate decisions, and the way our towns and cities evolve. It’s detailed, procedural, and often misunderstood. Most people only encounter it once or twice in their lives. Professionals live inside it every day.</p>\n<p>Eireplan started as a side project born out of curiosity: what would it look like if planning knowledge was easier to navigate, easier to trace, and easier to explain?</p>\n<p>Not simplified, just clearer.</p>\n<h2>Why planning feels harder than it should</h2>\n<p>If you’ve ever looked at a planning file, you’ll know the challenge isn’t a lack of information. It’s the opposite. There are policies layered on policies, national legislation intersecting with local plans, and long histories of decisions that quietly influence how new applications are assessed.</p>\n<p>Much of the work is repetitive. Checking completeness. Re-reading the same policy sections. Searching for similar past cases. Making sure nothing obvious has been missed.</p>\n<p>The system isn’t broken, but it is demanding. Even small errors can invalidate an application before it’s ever assessed, which adds time, cost, and frustration for everyone involved.</p>\n<p>That friction is what caught my attention.</p>\n<h2>What I’m trying to explore</h2>\n<p>Eireplan is my attempt to explore a different way of interacting with planning information.</p>\n<p>At its core, it’s an experiment in traceability.</p>\n<p>Instead of treating planning as a black box, where conclusions appear without clear lineage, the idea is to surface where information comes from, which documents matter, and how conclusions are formed. Not to replace professional judgement, but to support it.</p>\n<p>I’m interested in tools that help people think better, not just work faster.</p>\n<p>That means:</p>\n<ul>\n<li>being able to ask natural questions and see the policy basis behind the answer,</li>\n<li>understanding how similar cases were decided before,</li>\n<li>and keeping the logic visible, not hidden.</li>\n</ul>\n<h2>Building as a form of learning</h2>\n<p>This project isn’t driven by a single “big idea” moment. It’s grown incrementally, through reading, prototyping, talking to people in the system, and testing assumptions.</p>\n<p>Some weeks it’s technical. Other weeks it’s about understanding how planners actually work, or why certain processes exist the way they do. Often it’s both.</p>\n<p>I enjoy that tension. It’s where design, engineering, and policy collide.</p>\n<p>Eireplan is still evolving, and that’s intentional. I’m less interested in declaring it finished than in continuing to refine the questions it asks.</p>\n<h2>Why I’m sharing this</h2>\n<p>I wanted to write this down not as a statement of arrival, but as a marker of intent.</p>\n<p>I care about building tools that respect complex domains rather than flatten them. I care about clarity, accountability, and making invisible work more visible. And I enjoy the act of inventing things that sit quietly in the background and make difficult systems feel a little more navigable.</p>\n<p>Eireplan is one expression of that.</p>\n",
+    "wordCount": 495,
+    "readingTime": 3,
+    "assets": [
+      "/blog/eireplan_building_eireplan_4579d276a745.webp"
+    ]
   }
 ];
