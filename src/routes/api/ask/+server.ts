@@ -130,7 +130,7 @@ function generateAnswer(query: string, results: SearchResult[]): string {
   }
 
   if (q.includes('contact') || q.includes('email') || q.includes('reach')) {
-    return `You can reach me at ${about.email} or connect on GitHub and LinkedIn. Run the 'contact' command for links.`;
+    return `Contact: ${about.email} | GitHub: https://github.com/NeriCarcasci | LinkedIn: https://www.linkedin.com/in/neri-carcasci/`;
   }
 
   if (q.includes('project') || q.includes('built') || q.includes('made')) {

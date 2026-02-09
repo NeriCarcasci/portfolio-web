@@ -48,8 +48,8 @@ I focus on practical solutions: code that's tested, systems that scale, and docu
     'ML Ops, Model Monitoring',
     'System Design, API Development'
   ],
-  email: 'nericarcasci@gmail.com',
+  email: 'neri@neri.wtf',
   github: 'https://github.com/NeriCarcasci',
-  linkedin: 'https://www.linkedin.com/in/neri-carcasci/',
+  linkedin: 'https://www.linkedin.com/in/neri-carcasci/'
   cvUrl: '/cv.pdf'
 };
