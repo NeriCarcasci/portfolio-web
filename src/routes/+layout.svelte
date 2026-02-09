@@ -111,11 +111,4 @@
     {@render children()}
   </main>
 
-  {#if !isTerminalPage}
-    <footer class="border-t border-border/50 relative z-10">
-      <div class="container-main py-6 text-center text-sm text-muted-foreground">
-        <p>Built with SvelteKit. Source on GitHub.</p>
-      </div>
-    </footer>
-  {/if}
 </div>

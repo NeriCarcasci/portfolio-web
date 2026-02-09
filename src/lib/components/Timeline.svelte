@@ -3,6 +3,6 @@
   export { className as class };
 </script>
 
-<ol class="relative border-s border-gray-200 dark:border-gray-700 {className}">
+<ol class="relative border-s border-neutral-700/70 {className}">
   <slot />
 </ol>

@@ -65,38 +65,38 @@
     },
     {
       date: 'January 2025 – August 2025',
-      role: 'AI & ML Engineer',
+      role: 'AI & ML Engineer Intern',
       company: 'Red Hat Trusted AI',
-      description: 'Spearheaded Python rewrite and API exposure of core NLP evaluation metrics (BLEU, ROUGE, Levenshtein). Architected robust test infrastructure with dependency injection for service endpoints. Redesigned and reimplemented drift detection metrics including Jensen-Shannon divergence. Led educational outreach with robotics and Python workshops.',
+      description: 'Python rewrite of the trustyAI service, API exposure of core NLP evaluation metrics (BLEU, ROUGE, Levenshtein, ETC), including Drift Detection metric (using Jensen-Shannon divergence). Led educational outreach with robotics and Python workshops.',
       tags: ['Enterprise ML', 'Python', 'API Design', 'Testing', 'Open Source'],
       logo: '/about/redhat.svg',
-      highlight: true
+      highlight: false
+    },
+    {
+      date: '2021 – 2025',
+      role: 'CTO & Co-Founder',
+      company: 'Frensei',
+      description: 'Led product design, development, and go-to-market for an AI planning intelligence platform recognized with multiple national and international awards (LaunchBox, New Frontiers, ISEF). Secured $50k+ in signed pilots in multiple countries.',
+      tags: ['Enterprise', 'Leadership', 'AI/ML', 'Systems Architecture', 'Go-to-Market'],
+      logo: '/about/frensei.jpg',
+      highlight: false
     },
     {
       date: 'May 2023 – June 2024',
       role: 'Applied Maths & Computer Science Teacher',
       company: 'Educating Éire',
-      description: 'Taught senior cycle students in Applied Maths and Computer Science. Built on 2,000+ hours of freelance tutoring experience across secondary, undergraduate, and professional levels, helping learners develop systems thinking and problem decomposition skills.',
+      description: 'Taught senior cycle students in Applied Maths and Computer Science. Built on top of my 2,000+ hours of freelance tutoring experience across secondary, undergraduate, and professional levels, helping learners develop systems thinking and problem decomposition skills.',
       tags: ['Education', 'Mentoring', 'Teaching'],
       logo: '/about/educatingeire.png',
       note: 'Continued concurrent with Frensei'
     },
     {
       date: 'May 2023 – August 2023',
-      role: 'Cybersecurity Consultant',
+      role: 'Cybersecurity Consultant Internship',
       company: 'Ernst & Young',
       description: 'Gained practical experience in penetration testing, cyber campaign management, and client engagement. Contributed to innovation initiatives including the EY Sustainability Challenge and Open Science AI/ML competitions.',
       tags: ['Security', 'Consulting', 'Penetration Testing'],
       logo: '/about/ey.webp'
-    },
-    {
-      date: '2021 – 2025',
-      role: 'CTO & Co-Founder',
-      company: 'Frensei',
-      description: 'Led product design, development, and go-to-market for an AI planning intelligence platform recognized with multiple national and international awards (LaunchBox, New Frontiers, ISEF). Secured $50k+ in funding and $500k+ in signed pilots. Built a production system used by planning professionals across Ireland and beyond, with enterprise pilots across multiple continents.',
-      tags: ['Enterprise', 'Leadership', 'AI/ML', 'Systems Architecture', 'Go-to-Market'],
-      logo: '/about/frensei.jpg',
-      highlight: true
     }
   ];
 
@@ -105,22 +105,9 @@
     {
       year: '2024',
       title: 'ISEF Finalist & Podium',
-      description: '2-time ISEF finalist with podium placement in 2024, winning $5,000 in recognition of outstanding achievement',
+      description: 'ISEF finalist with podium placement in 2024, winning $5,000 in recognition of outstanding achievement',
       org: 'ISEF',
       logo: '/about/isef.png'
-    },
-    {
-      year: '2023',
-      title: 'Huawei Seeds for the Future',
-      description: 'Selected for Huawei\'s global leadership development programme',
-      org: 'Huawei'
-    },
-    {
-      year: '2023',
-      title: 'Udacity Deep Learning Nanodegree',
-      description: 'Completed 6-month comprehensive deep learning certification covering neural networks, CNNs, RNNs, GANs, and deployment',
-      org: 'Udacity',
-      logo: '/about/udacity.png'
     },
     {
       year: '2021–2025',
@@ -128,6 +115,20 @@
       description: 'Phase 2 backing and funding for Frensei through Enterprise Ireland\'s New Frontiers programme',
       org: 'Enterprise Ireland',
       logo: '/about/newfrontiers.jpg'
+    },
+    {
+      year: '2023',
+      title: 'Huawei Seeds for the Future',
+      description: 'Selected & participated for Huawei\'s global leadership development programme',
+      org: 'Huawei',
+      logo: '/about/seedsforthefuture.jpg'
+    },
+    {
+      year: '2023',
+      title: 'Udacity Deep Learning Nanodegree',
+      description: 'Completed 6-month comprehensive deep learning certification covering neural networks, CNNs, RNNs, GANs, and deployment',
+      org: 'Udacity',
+      logo: '/about/udacity.png'
     }
   ];
 
@@ -319,15 +320,6 @@
           </div>
         {/each}
       </div>
-    </section>
-
-    <!-- Closing -->
-    <section class="border-t border-white/10 pt-12 space-y-6">
-      <p class="text-lg text-neutral-300 leading-relaxed">
-        If you want to see what I've built, explore <a href="/projects" class="text-emerald-400 hover:underline">Projects</a>. 
-        For technical thinking and lessons learned, check out the <a href="/blog" class="text-emerald-400 hover:underline">Blog</a>. 
-        Or try the <a href="/terminal" class="text-emerald-400 hover:underline">Terminal</a> if you prefer navigating that way.
-      </p>
     </section>
 
   </div>

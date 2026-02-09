@@ -21,7 +21,7 @@
 		'Backend Engineering for ML Systems',
 		'Responsible AI & Model Governance',
 		'Production ML Systems',
-		'Sofware Engineer'
+		'Sofware Engineer',
 	];
 
 	// Hero content - rendered directly on canvas

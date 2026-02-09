@@ -108,7 +108,6 @@ declare module '$env/static/private' {
 	export const ZDOTDIR: string;
 	export const LESSOPEN: string;
 	export const USER: string;
-	export const GIT_PAGER: string;
 	export const VSCODE_GIT_IPC_HANDLE: string;
 	export const CONDA_SHLVL: string;
 	export const QT_WAYLAND_RECONNECT: string;
@@ -260,7 +259,6 @@ declare module '$env/dynamic/private' {
 		ZDOTDIR: string;
 		LESSOPEN: string;
 		USER: string;
-		GIT_PAGER: string;
 		VSCODE_GIT_IPC_HANDLE: string;
 		CONDA_SHLVL: string;
 		QT_WAYLAND_RECONNECT: string;
