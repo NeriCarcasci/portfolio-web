@@ -20,7 +20,7 @@ export interface AboutContent {
 export const about: AboutContent = {
   name: 'Neri Carcasci',
   role: 'AI/ML Engineer',
-  summary: 'I build production ML systems and scalable APIs. I care about clean code, reliable infrastructure, and shipping things that work.',
+  summary: 'I build production ML systems that solve real problems. I care about clean code, reliable infrastructure, and shipping things that work.',
   bio: `Engineer with experience across ML ops, backend development, and technical leadership.
 I've rebuilt ML metrics platforms, designed anomaly detection services, and led a startup from MVP to funding.
 I focus on practical solutions: code that's tested, systems that scale, and documentation that helps.`,
