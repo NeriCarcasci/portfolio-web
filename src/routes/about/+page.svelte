@@ -24,33 +24,7 @@
     description: about.summary
   };
 
-  // Engineering principles
-  const principles = [
-    {
-      title: 'Reliability over novelty',
-      desc: 'Systems should work consistently under expected conditions.'
-    },
-    {
-      title: 'Testability is non-negotiable',
-      desc: 'If it can\'t be tested, it can\'t be trusted in production.'
-    },
-    {
-      title: 'Clarity over cleverness',
-      desc: 'Code is read more than written. Make it obvious.'
-    },
-    {
-      title: 'Production realism',
-      desc: 'Build for how systems actually behave, not how they should behave.'
-    },
-    {
-      title: 'Traceability matters',
-      desc: 'Especially in AI systems—if reasoning can\'t be explained, it can\'t be used.'
-    },
-    {
-      title: 'Long-term maintainability',
-      desc: 'Choose boring technology. Future you will be grateful.'
-    }
-  ];
+
 
   // Timeline experiences - reverse chronological (newest first)
   const timeline = [
@@ -67,7 +41,7 @@
       date: 'January 2025 – August 2025',
       role: 'AI & ML Engineer Intern',
       company: 'Red Hat Trusted AI',
-      description: 'Python rewrite of the trustyAI service, API exposure of core NLP evaluation metrics (BLEU, ROUGE, Levenshtein, ETC), including Drift Detection metric (using Jensen-Shannon divergence). Led educational outreach with robotics and Python workshops.',
+      description: 'Rewrote trustyAI service in Python, exposed core NLP metrics (BLEU, ROUGE, Levenshtein) via API, built drift detection using Jensen-Shannon divergence. Ran Python and robotics workshops.',
       tags: ['Enterprise ML', 'Python', 'API Design', 'Testing', 'Open Source'],
       logo: '/about/redhat.svg',
       highlight: false
@@ -76,8 +50,8 @@
       date: '2021 – 2025',
       role: 'CTO & Co-Founder',
       company: 'Frensei',
-      description: 'Led product design, development, and go-to-market for an AI planning intelligence platform recognized with multiple national and international awards (LaunchBox, New Frontiers, ISEF). Secured $50k+ in signed pilots in multiple countries.',
-      tags: ['Enterprise', 'Leadership', 'AI/ML', 'Systems Architecture', 'Go-to-Market'],
+      description: 'Built AI planning platform for regulated environments. Won awards including ISEF finalist, Enterprise Ireland New Frontiers. Signed pilots in multiple countries.',
+      tags: ['Leadership', 'AI/ML', 'Systems Architecture', 'Go-to-Market'],
       logo: '/about/frensei.jpg',
       highlight: false
     },
@@ -85,16 +59,16 @@
       date: 'May 2023 – June 2024',
       role: 'Applied Maths & Computer Science Teacher',
       company: 'Educating Éire',
-      description: 'Taught senior cycle students in Applied Maths and Computer Science. Built on top of my 2,000+ hours of freelance tutoring experience across secondary, undergraduate, and professional levels, helping learners develop systems thinking and problem decomposition skills.',
+      description: 'Taught senior cycle computing and applied maths. Built on 2,000+ hours of freelance tutoring across secondary, undergraduate, and professional levels.',
       tags: ['Education', 'Mentoring', 'Teaching'],
       logo: '/about/educatingeire.png',
-      note: 'Continued concurrent with Frensei'
+      note: 'Concurrent with Frensei'
     },
     {
       date: 'May 2023 – August 2023',
       role: 'Cybersecurity Consultant Internship',
       company: 'Ernst & Young',
-      description: 'Gained practical experience in penetration testing, cyber campaign management, and client engagement. Contributed to innovation initiatives including the EY Sustainability Challenge and Open Science AI/ML competitions.',
+      description: 'Penetration testing and cyber campaign management. Contributed to EY Sustainability Challenge and Open Science innovation initiatives.',
       tags: ['Security', 'Consulting', 'Penetration Testing'],
       logo: '/about/ey.webp'
     }
@@ -105,28 +79,28 @@
     {
       year: '2024',
       title: 'ISEF Finalist & Podium',
-      description: 'ISEF finalist with podium placement in 2024, winning $5,000 in recognition of outstanding achievement',
+      description: 'ISEF finalist podium placement, $5,000 award',
       org: 'ISEF',
       logo: '/about/isef.png'
     },
     {
       year: '2021–2025',
       title: 'Enterprise Ireland New Frontiers',
-      description: 'Phase 2 backing and funding for Frensei through Enterprise Ireland\'s New Frontiers programme',
+      description: 'Phase 2 funding for Frensei through New Frontiers programme',
       org: 'Enterprise Ireland',
       logo: '/about/newfrontiers.jpg'
     },
     {
       year: '2023',
       title: 'Huawei Seeds for the Future',
-      description: 'Selected & participated for Huawei\'s global leadership development programme',
+      description: 'Selected for global leadership development programme',
       org: 'Huawei',
       logo: '/about/seedsforthefuture.jpg'
     },
     {
       year: '2023',
       title: 'Udacity Deep Learning Nanodegree',
-      description: 'Completed 6-month comprehensive deep learning certification covering neural networks, CNNs, RNNs, GANs, and deployment',
+      description: 'Completed 6-month deep learning certification',
       org: 'Udacity',
       logo: '/about/udacity.png'
     }
@@ -139,8 +113,8 @@
     duration: 'September 2022 – August 2026',
     gpa: '3.7',
     logo: '/about/tudublin.jpg',
-    description: 'Specialized degree in machine learning and artificial intelligence. Graduate thesis focuses on explainable Graph Neural Networks for financial crime detection, evaluating multiple explainability methods (SHAP, LIME, GNNExplainer, Counterfactual-GNN) on real-world cryptocurrency transaction datasets.',
-    tags: ['GNNs', 'Explainability', 'Research', 'Financial Crime Detection']
+    description: 'Thesis: Explainable Graph Neural Networks for financial crime detection. Comparing explainability methods (SHAP, LIME, GNNExplainer) on cryptocurrency transaction datasets.',
+    tags: ['GNNs', 'Explainability', 'Financial Crime Detection']
   };
 </script>
 
@@ -171,17 +145,10 @@
     <section class="space-y-6">
       <div class="embedded-panel space-y-4">
         <p class="text-lg leading-relaxed text-neutral-200">
-          I build production systems at the intersection of software engineering and machine learning. My work spans 
-          enterprise ML infrastructure, regulated decision-support platforms, and applied research in explainable AI.
+          I'm interested in systems that solve hard problems: how do you make AI explainable? How do you build planning intelligence for regulated environments? How do you scale production ML at enterprise?
         </p>
         <p class="text-lg leading-relaxed text-neutral-200">
-          My background combines hands-on engineering with systems thinking—whether that's rebuilding metrics 
-          platforms for model governance, architecting AI systems for regulated planning environments, or 
-          developing explainability frameworks for graph neural networks in financial crime detection.
-        </p>
-        <p class="text-lg leading-relaxed text-neutral-200">
-          I approach engineering pragmatically: systems should be reliable, testable, and maintainable. 
-          AI should be traceable and explainable. Code should be clear. Production matters more than polish in prototypes.
+          I've explored these through building a startup (Frensei), contributing to enterprise ML platforms (Red Hat), and researching explainability methods for graph neural networks. The work teaches you what matters: reliability, clarity, and systems that actually work in production.
         </p>
       </div>
     </section>
@@ -286,41 +253,9 @@
       </div>
     </section>
 
-    <!-- Key Learnings -->
-    <section class="space-y-6">
-      <h2 class="text-3xl font-semibold text-white">Key Learnings from the Journey</h2>
-      <div class="embedded-panel space-y-4">
-        <p class="leading-relaxed text-neutral-200">
-          Building production systems taught me that engineering pragmatism matters. Frensei forced me to balance 
-          technical rigor with commercial reality—systems must be reliable, testable, and maintainable, but they also 
-          need to ship and adapt to real user feedback.
-        </p>
-        <p class="leading-relaxed text-neutral-200">
-          At Red Hat, I learned that scale changes everything. What works in a startup doesn't necessarily work at 
-          enterprise scale. Backwards compatibility, incremental improvement, and institutional knowledge become 
-          critical. Production ML is software engineering with extra uncertainty—monitoring, versioning, and realistic 
-          expectations about model behavior compound the engineering challenges.
-        </p>
-        <p class="leading-relaxed text-neutral-200">
-          Research (through my thesis on explainable GNNs) taught me that the most interesting problems sit at the 
-          intersection of rigor and pragmatism. Explainability in AI isn't an academic exercise—it's a fundamental 
-          requirement for regulated systems where decisions must be defensible.
-        </p>
-      </div>
-    </section>
 
-    <!-- Engineering Principles -->
-    <section class="space-y-6">
-      <h2 class="text-3xl font-semibold text-white">What I Care About as an Engineer</h2>
-      <div class="grid md:grid-cols-2 gap-4">
-        {#each principles as principle}
-          <div class="border border-white/10 bg-black/40 rounded-lg p-5 hover:border-emerald-500/30 transition-colors">
-            <h4 class="font-semibold text-emerald-400 mb-2">{principle.title}</h4>
-            <p class="text-sm text-neutral-300 leading-relaxed">{principle.desc}</p>
-          </div>
-        {/each}
-      </div>
-    </section>
+
+
 
   </div>
 </div>
