@@ -1,30 +1,29 @@
 {
-  "title": "LEO: AI-Powered Natural Language Shell Interface",
-  "summary": "*LEO** is a Python-based CLI that translates natural language into executable shell commands. A user describes an intent and the system generates, validates, and executes the corresponding command through a controlled execution layer.",
-  "tags": [
-, , , "Python",
-, , , "LLM Systems",
-, , , "Deterministic Execution",
-, , , "CLI",
-, , , "Security Engineering",
-, , , "Automation"
-, ,   ],
+  "title": "Building an x86 OS from Scratch",
+  "summary": "A bare-metal x86 32-bit operating system built from the ground up in C++ and x86 assembly — no stdlib, no RTTI, no exceptions. Covers protected mode setup, interrupt handling, PS/2 drivers, PCI enumeration, physical memory management, a heap allocator, VGA graphics mode, a driver abstraction layer, ATA PIO disk I/O, MBR partition parsing, and a FAT32 reader.",
+    "tags": [
+    "os-dev",
+    "systems",
+    "x86",
+    "low-level",
+    "c++",
+    "assembly"
+    ],
   "featured": true,
-  "tech": [
-, , , "Python",
-, , , "REST",
-, , , "OpenAI API (or Cloud LLM API)",
-, , , "Pydantic",
-, , , "Subprocess",
-, , , "Docker"
-, ,   ],
+    "tech": [
+    "C++",
+    "x86 Assembly",
+    "GRUB Multiboot",
+    "QEMU",
+    "GAS (GNU Assembler)",
+    "ld (GNU Linker)"
+    ],
   "links": [
-, {
-,   "label": "GitHub Repository",
-,   "url": "https://github.com/NeriCarcasci/leo"
-, }
+    {
+    "label": "GitHub Repository",
+    "url": "https://github.com/NeriCarcasci/LaylaOS"
+    }
   ],
   "order": 2,
   "draft": false
-  
 }
