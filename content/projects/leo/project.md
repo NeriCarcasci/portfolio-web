@@ -1,8 +1,8 @@
-# LEO-LOCAL: AI-Powered Natural Language Shell Interface
+# LEO: AI-Powered Natural Language Shell Interface
 
 ## Vision & Technical Overview
 
-**LEO-LOCAL** represents an ambitious bridge between natural language processing and system administration, transforming how developers interact with command-line environments. The project envisions a future where shell operations are democratized through conversational AI, eliminating the cognitive overhead of memorizing complex command syntax while maintaining the precision and power of traditional CLIs.
+**LEO** represents an ambitious bridge between natural language processing and system administration, transforming how developers interact with command-line environments. The project envisions a future where shell operations are democratized through conversational AI, eliminating the cognitive overhead of memorizing complex command syntax while maintaining the precision and power of traditional CLIs.
 
 ---
 ![Architecture Sample](local:image.png)
