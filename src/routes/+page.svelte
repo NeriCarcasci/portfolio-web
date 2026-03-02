@@ -12,7 +12,7 @@
   import { getFeaturedProjects } from '$content/projects';
   import { getFeaturedPosts } from '$lib/blog';
 
-  const featuredProjects = getFeaturedProjects();
+  const featuredProjects = getFeaturedProjects().slice(0, 3);
   const latestPosts = getFeaturedPosts(3);
   const SUMMARY_MAX = 150;
   const IMAGE_EXTS = ['.webp', '.png', '.jpg', '.jpeg', '.gif'];

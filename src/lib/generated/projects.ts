@@ -146,7 +146,7 @@ export const projects: Project[] = [
       "Security Engineering",
       "Automation"
     ],
-    "featured": true,
+    "featured": false,
     "tech": [
       "Python",
       "REST",
