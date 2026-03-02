@@ -1,0 +1,30 @@
+{
+  "title": "LEO: AI-Powered Natural Language Shell Interface",
+  "summary": "*LEO** is a Python-based CLI that translates natural language into executable shell commands. A user describes an intent and the system generates, validates, and executes the corresponding command through a controlled execution layer.",
+  "tags": [
+, , , "Python",
+, , , "LLM Systems",
+, , , "Deterministic Execution",
+, , , "CLI",
+, , , "Security Engineering",
+, , , "Automation"
+, ,   ],
+  "featured": true,
+  "tech": [
+, , , "Python",
+, , , "REST",
+, , , "OpenAI API (or Cloud LLM API)",
+, , , "Pydantic",
+, , , "Subprocess",
+, , , "Docker"
+, ,   ],
+  "links": [
+, {
+,   "label": "GitHub Repository",
+,   "url": "https://github.com/NeriCarcasci/leo"
+, }
+  ],
+  "order": 2,
+  "draft": false
+  
+}

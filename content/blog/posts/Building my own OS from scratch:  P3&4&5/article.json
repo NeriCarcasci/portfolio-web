@@ -1,0 +1,10 @@
+{
+  "title": "Writing an x86 OS: Memory, Graphics, Driver Abstractions, and FAT32",
+  "description": "Continuing the bare-metal x86 OS: heap allocator over the Multiboot memory map, operator new wired to a global MemoryManager, VGA Mode 13h entered via direct register programming, a driver abstraction layer with BAR parsing, ATA PIO disk I/O, MBR parsing, and a FAT32 reader.",
+  "date": "2026-03-02",
+  "modified": "2026-03-02",
+  "tags": ["OS", "x86", "systems", "memory-management", "filesystems", "graphics", "c++"],
+  "people": ["author"],
+  "type": "article",
+  "draft": false
+}

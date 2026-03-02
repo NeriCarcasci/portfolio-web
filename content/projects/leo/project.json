@@ -1,9 +1,23 @@
 {
-  "title": "LEO – AI-Powered Anomaly Detection & Automation Service",
-  "summary": "Designed and built a production-oriented anomaly detection service exposing a FastAPI-based interface for real-time and batch time-series analysis, with support for configurable thresholds, execution tracking, and extensible ML backends.",
-  "tags": ["Python", "Machine Learning", "Anomaly Detection", "API", "Automation", "Real-time"],
+  "title": "LEO: AI-Powered Natural Language Shell Interface",
+  "summary": "*LEO** is a Python-based CLI that translates natural language into executable shell commands. A user describes an intent and the system generates, validates, and executes the corresponding command through a controlled execution layer.",
+  "tags": [
+            "Python",
+            "LLM Systems",
+            "Deterministic Execution",
+            "CLI",
+            "Security Engineering",
+            "Automation"
+          ],
   "featured": true,
-  "tech": ["Python", "FastAPI", "NumPy", "scikit-learn", "Redis", "Docker"],
+  "tech": [
+            "Python",
+            "REST",
+            "OpenAI API (or Cloud LLM API)",
+            "Pydantic",
+            "Subprocess",
+            "Docker"
+          ],
   "links": [
     {
       "label": "GitHub Repository",

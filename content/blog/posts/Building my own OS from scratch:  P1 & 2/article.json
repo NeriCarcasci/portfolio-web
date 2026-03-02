@@ -1,0 +1,10 @@
+{
+  "title": "Writing an x86 OS: Protected Mode, Interrupts, and Hardware Drivers",
+  "description": "A technical walkthrough of building the CPU foundation and hardware communication layer of a bare-metal x86 OS — GDT, IDT, PIC remapping, port I/O, PS/2 keyboard and mouse drivers, and PCI bus enumeration.",
+  "date": "2026-01-15",
+  "modified": "2026-01-15",
+  "tags": ["OS", "x86", "systems", "assembly", "c++", "low-level"],
+  "people": ["author"],
+  "type": "article",
+  "draft": false
+}
