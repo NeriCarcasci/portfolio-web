@@ -234,6 +234,7 @@ Path traversal walks one component at a time, calling `FindEntry` at each direct
 
 Disk testing uses QEMU's `-hda` flag with a raw disk image:
 
+
 ```bash
 dd if=/dev/zero of=disk.img bs=512 count=131072
 mkfs.fat -F 32 disk.img
