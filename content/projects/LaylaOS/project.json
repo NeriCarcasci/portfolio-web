@@ -25,5 +25,6 @@
     }
   ],
   "order": 2,
-  "draft": false
+  "draft": false,
+  "previewImage": "<local:image.png>"
 }
